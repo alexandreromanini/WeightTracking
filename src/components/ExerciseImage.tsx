@@ -38,6 +38,9 @@ export function ExerciseImage({ src, name, alt = '', className = '' }: Props) {
       src={src}
       alt={alt}
       loading="lazy"
+      // Requête CORS : la réponse n'est pas « opaque », le service worker
+      // peut la mettre en cache sans gonfler le quota de stockage.
+      crossOrigin="anonymous"
       onError={() => setFailedSrc(src)}
       className={`bg-chalk object-cover ${className}`}
     />

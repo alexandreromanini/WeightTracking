@@ -30,6 +30,8 @@ fois, et on enregistre sa séance en quelques pouces.
 - **Progression** : courbe de la charge max et du 1RM estimé sur une vraie échelle de temps,
   historique modifiable et supprimable.
 - **Sauvegarde** : export / import JSON validé, données de démo, effacement complet.
+- **Installable et hors ligne (PWA)** : s’ajoute à l’écran d’accueil et fonctionne sans
+  réseau au fond de la salle (saisie, historique, graphiques, recherche déjà chargée).
 - **Accessibilité** : navigation clavier, focus visible, libellés explicites, annonces
   aux lecteurs d’écran, animations désactivées si « réduire les animations » est actif,
   palette du graphique vérifiée pour le daltonisme.
@@ -44,6 +46,7 @@ fois, et on enregistre sa séance en quelques pouces.
 | Recherche  | Fuse.js + dictionnaire de synonymes français                                                      |
 | Graphiques | Recharts (chargé à la demande)                                                                    |
 | Navigation | React Router                                                                                      |
+| Hors ligne | vite-plugin-pwa (Workbox)                                                                         |
 | Qualité    | Vitest, React Testing Library, fake-indexeddb, ESLint (`strictTypeChecked`, `jsx-a11y`), Prettier |
 
 ## Choix techniques
@@ -82,6 +85,16 @@ casse pas l’historique.
 Un fichier importé est une donnée non fiable : `parseBackup` vérifie chaque champ, les
 références entre séances et exercices, et les doublons. La restauration se fait dans une
 transaction : soit tout est remplacé, soit rien ne change.
+
+**Hors ligne d’abord.**
+Les données étant déjà locales (IndexedDB), il restait à rendre l’app elle-même
+disponible sans réseau. Le service worker (Workbox via vite-plugin-pwa) précharge tout
+le build, y compris l’écran Progression chargé à la demande, et met en cache les polices
+et les photos d’exercices au fil de la navigation. Les photos sont demandées en CORS
+(`crossOrigin="anonymous"`) : une réponse « opaque » serait comptée ~7 Mo chacune dans
+le quota de stockage du navigateur. Les mises à jour sont **proposées** (bandeau
+« Nouvelle version disponible ») plutôt qu’appliquées d’office : un rechargement
+automatique effacerait une séance en cours de saisie.
 
 **Poids toujours en kg.** Un futur choix kg/lbs ne sera qu’une conversion à l’affichage.
 
@@ -143,6 +156,10 @@ Site statique : `npm run build` produit `dist/`.
 ## Limites connues
 
 - Les données restent dans le navigateur : penser à exporter une sauvegarde.
+- Hors ligne, la recherche suppose que le catalogue ait été chargé une première fois en
+  ligne ; seules les photos déjà affichées sont en cache (sinon, initiales en repli).
+- Le bandeau « Hors ligne » repose sur `navigator.onLine` : il s’affiche en mode avion,
+  pas avec un réseau présent mais inutilisable. L’app fonctionne dans les deux cas.
 - Les exercices au poids du corps (0 kg) n’ont pas encore de record dédié (en répétitions).
 - Les instructions des exercices sont en anglais (celles de la base source).
 

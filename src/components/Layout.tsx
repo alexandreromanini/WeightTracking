@@ -1,4 +1,6 @@
 import { NavLink, Outlet, ScrollRestoration } from 'react-router'
+import { useOnline } from '../hooks/useOnline'
+import { UpdatePrompt } from './UpdatePrompt'
 import { PlateIcon, SearchIcon, SlidersIcon } from './icons'
 
 const tabs = [
@@ -8,8 +10,17 @@ const tabs = [
 ]
 
 export function Layout() {
+  const online = useOnline()
   return (
     <>
+      {!online && (
+        <p
+          role="status"
+          className="bg-steel px-4 py-1.5 pt-[calc(0.375rem+env(safe-area-inset-top))] text-center text-xs text-chalk"
+        >
+          Hors ligne · tes séances restent enregistrées sur ce téléphone
+        </p>
+      )}
       <main className="mx-auto max-w-2xl px-4 pt-6 pb-[calc(6rem+env(safe-area-inset-bottom))]">
         <Outlet />
       </main>
@@ -36,6 +47,7 @@ export function Layout() {
           ))}
         </ul>
       </nav>
+      <UpdatePrompt />
       <ScrollRestoration />
     </>
   )
