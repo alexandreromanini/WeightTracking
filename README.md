@@ -4,7 +4,7 @@ Application web mobile-first pour suivre sa progression exercice par exercice.
 À la salle, on ouvre l’app, on voit immédiatement ce qu’on a soulevé la dernière
 fois, et on enregistre sa séance en quelques pouces.
 
-**Démo :** _lien à venir_ · données stockées uniquement dans le navigateur (aucun compte)
+**Démo :** [weight-tracking-tau.vercel.app](https://weight-tracking-tau.vercel.app) · données stockées uniquement dans le navigateur (aucun compte). Pour explorer sans rien saisir : bouton « Essayer avec des données de démo » sur l’accueil.
 
 <p align="center">
   <img src="docs/screenshots/accueil.png" width="200" alt="Accueil : dernière performance et records de chaque exercice" />
