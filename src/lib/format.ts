@@ -5,6 +5,10 @@ const relative = new Intl.RelativeTimeFormat('fr', { numeric: 'auto' })
 
 export const formatKg = (weight: number) => `${kg.format(weight)} kg`
 
+/** Le nombre seul (« 92,5 »), ou « PDC » au poids du corps. */
+export const formatWeight = (weight: number) =>
+  weight > 0 ? kg.format(weight) : 'PDC'
+
 /** « 80 kg × 8 », ou « PDC × 12 » au poids du corps. */
 export const formatSet = ({ weight, reps }: WorkoutSet) =>
   `${weight > 0 ? formatKg(weight) : 'PDC'} × ${reps}`
@@ -29,6 +33,16 @@ const longDay = new Intl.DateTimeFormat('fr-FR', {
   month: 'long',
   timeZone: 'UTC',
 })
+
+const shortDay = new Intl.DateTimeFormat('fr-FR', {
+  day: 'numeric',
+  month: 'short',
+  timeZone: 'UTC',
+})
+
+/** « 21 oct. » */
+export const formatShortDate = (iso: string) =>
+  shortDay.format(dayNumber(iso) * DAY_MS)
 
 /** « mardi 21 octobre » */
 export const formatLongDate = (iso: string) =>

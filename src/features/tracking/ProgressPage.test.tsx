@@ -89,7 +89,9 @@ it('modifie une séance existante sans en créer une nouvelle', async () => {
       name: /Modifier la séance du .*1 octobre/,
     }),
   )
-  expect(await screen.findByText('Modifier la séance')).toBeInTheDocument()
+  expect(
+    await screen.findByText(/Tu corriges la séance du .*1 octobre/),
+  ).toBeInTheDocument()
   expect(screen.getByLabelText('Poids, série 1')).toHaveValue('100')
 
   await user.click(

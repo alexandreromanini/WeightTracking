@@ -1,12 +1,11 @@
 import { NavLink, Outlet, ScrollRestoration } from 'react-router'
 import { useOnline } from '../hooks/useOnline'
 import { UpdatePrompt } from './UpdatePrompt'
-import { PlateIcon, SearchIcon, SlidersIcon } from './icons'
 
 const tabs = [
-  { to: '/', label: 'Mes exos', Icon: PlateIcon },
-  { to: '/recherche', label: 'Rechercher', Icon: SearchIcon },
-  { to: '/reglages', label: 'Réglages', Icon: SlidersIcon },
+  { to: '/', label: 'Mes exos' },
+  { to: '/recherche', label: 'Chercher' },
+  { to: '/reglages', label: 'Réglages' },
 ]
 
 export function Layout() {
@@ -16,31 +15,32 @@ export function Layout() {
       {!online && (
         <p
           role="status"
-          className="bg-line px-4 py-1.5 pt-[calc(0.375rem+env(safe-area-inset-top))] text-center text-xs text-ink"
+          className="bg-night px-4 py-2 pt-[calc(0.5rem+env(safe-area-inset-top))] text-label text-white"
         >
-          Hors ligne · tes séances restent enregistrées sur ce téléphone
+          Hors ligne. Tes séances s’enregistrent quand même sur ce téléphone.
         </p>
       )}
-      <main className="mx-auto max-w-2xl px-4 pt-6 pb-[calc(6rem+env(safe-area-inset-bottom))]">
+      <main className="mx-auto max-w-2xl px-4 pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))]">
         <Outlet />
       </main>
       <nav
         aria-label="Navigation principale"
-        className="fixed inset-x-0 bottom-0 border-t border-line bg-page/95 pb-[env(safe-area-inset-bottom)] backdrop-blur"
+        className="fixed inset-x-0 bottom-0 z-20 border-t border-rule bg-white pb-[env(safe-area-inset-bottom)]"
       >
         <ul className="mx-auto flex max-w-2xl">
-          {tabs.map(({ to, label, Icon }) => (
+          {tabs.map(({ to, label }) => (
             <li key={to} className="flex-1">
               <NavLink
                 to={to}
                 end={to === '/'}
                 className={({ isActive }) =>
-                  `flex min-h-16 flex-col items-center justify-center gap-1 text-xs font-semibold ${
-                    isActive ? 'text-brand' : 'text-muted hover:text-ink'
+                  `flex min-h-14 items-center justify-center border-t-4 display text-label ${
+                    isActive
+                      ? 'border-electric text-electric'
+                      : 'border-transparent text-steel hover:text-night'
                   }`
                 }
               >
-                <Icon className="size-6" />
                 {label}
               </NavLink>
             </li>

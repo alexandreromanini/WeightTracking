@@ -17,15 +17,15 @@ export default defineConfig({
       registerType: 'prompt',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Barre — suivi de charges',
+        name: 'Barre · tes charges, séance après séance',
         short_name: 'Barre',
         description:
           'Suivi de progression en musculation, exercice par exercice.',
         lang: 'fr',
         start_url: '/',
         display: 'standalone',
-        background_color: '#ffffff',
-        theme_color: '#1f4fd1',
+        background_color: '#0b1238',
+        theme_color: '#0b1238',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },

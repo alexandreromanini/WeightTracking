@@ -1,6 +1,5 @@
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { CloseIcon } from './icons'
-import { buttonSmall } from './ui'
 
 /** Propose la nouvelle version au lieu de recharger d'office (séance en cours). */
 export function UpdatePrompt() {
@@ -14,14 +13,14 @@ export function UpdatePrompt() {
   return (
     <div
       role="status"
-      className="fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-20 mx-auto max-w-2xl px-4"
+      className="fixed inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-30 bg-night text-white"
     >
-      <div className="flex items-center gap-3 rounded-xl border border-line bg-card p-3 shadow-lg">
-        <p className="flex-1 text-sm">Nouvelle version disponible.</p>
+      <div className="mx-auto flex max-w-2xl items-center gap-4 px-4 py-2 [&_*:focus-visible]:outline-white">
+        <p className="flex-1">Une nouvelle version de Barre est prête.</p>
         <button
           type="button"
           onClick={() => void updateServiceWorker(true)}
-          className={`${buttonSmall} border-brand bg-brand text-white`}
+          className="min-h-11 font-bold underline decoration-2 underline-offset-4"
         >
           Mettre à jour
         </button>
@@ -29,7 +28,7 @@ export function UpdatePrompt() {
           type="button"
           aria-label="Plus tard"
           onClick={() => setNeedRefresh(false)}
-          className="grid size-11 place-items-center rounded-full text-muted hover:text-ink"
+          className="grid size-11 place-items-center"
         >
           <CloseIcon className="size-5" />
         </button>

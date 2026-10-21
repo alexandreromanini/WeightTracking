@@ -1,9 +1,8 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Link } from 'react-router'
 import { PageHeader } from '../../components/PageHeader'
-import { PlusIcon } from '../../components/icons'
 import { EmptyState, SkeletonList } from '../../components/states'
-import { buttonPrimary, buttonSmall } from '../../components/ui'
+import { buttonPrimary, linkAction } from '../../components/ui'
 import { db } from '../../db/db'
 import { buildDemoBackup } from '../../db/seed'
 import { restoreBackup } from '../../lib/backup'
@@ -45,17 +44,16 @@ export function MyExercisesPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Barre"
+        logo
         title="Mes exercices"
         action={
           items &&
           items.length > 0 && (
             <Link
               to="/recherche"
-              aria-label="Ajouter un exercice"
-              className="grid size-12 shrink-0 place-items-center rounded-full bg-white text-brand shadow-sm active:scale-95"
+              className="inline-flex min-h-11 items-center bg-electric px-3 display text-label text-white active:bg-white active:text-night"
             >
-              <PlusIcon className="size-6" />
+              + Ajouter
             </Link>
           )
         }
@@ -65,30 +63,34 @@ export function MyExercisesPage() {
         {items === undefined && <SkeletonList count={3} label="Chargement…" />}
         {items?.length === 0 && (
           <EmptyState
-            title="Rien à soulever"
+            title="Rien à soulever."
             action={
-              <div className="flex flex-col items-center gap-3">
+              <div className="flex flex-col items-start gap-4">
                 <Link to="/recherche" className={buttonPrimary}>
                   Trouver un exercice
                 </Link>
                 <button
                   type="button"
                   onClick={() => void restoreBackup(buildDemoBackup())}
-                  className={buttonSmall}
+                  className={linkAction}
                 >
-                  Essayer avec des données de démo
+                  Ou essayer avec 10 semaines fictives
                 </button>
               </div>
             }
           >
-            Ajoute tes exercices pour retrouver ta dernière charge en un coup
-            d’œil.
+            Ajoute un exercice : à chaque retour à la salle, Barre t’affiche ce
+            que tu as soulevé la dernière fois.
           </EmptyState>
         )}
-        <ul className="space-y-3">
-          {items?.map(({ exercise, summary }) => (
+        <ul className="-mt-2 divide-y divide-rule border-rule [&:not(:empty)]:border-b">
+          {items?.map(({ exercise, summary }, i) => (
             <li key={exercise.id}>
-              <ExerciseSummaryCard exercise={exercise} summary={summary} />
+              <ExerciseSummaryCard
+                exercise={exercise}
+                summary={summary}
+                featured={i === 0 && summary.last !== undefined}
+              />
             </li>
           ))}
         </ul>

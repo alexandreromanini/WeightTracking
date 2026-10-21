@@ -7,38 +7,45 @@ type Back =
 
 interface Props {
   title: string
-  eyebrow?: string
   back?: Back
+  /** Affiche le logotype à gauche (accueil). */
+  logo?: boolean
   action?: ReactNode
   children?: ReactNode
 }
 
 const backClass =
-  '-ml-2 mb-1 inline-flex min-h-11 items-center gap-1 pr-3 text-sm font-semibold text-white/85 hover:text-white'
+  '-ml-1 inline-flex min-h-11 items-center gap-1 pr-3 font-bold text-white hover:underline'
 
-/** Bandeau bleu en tête de page, commun à tous les écrans. */
-export function PageHeader({ title, eyebrow, back, action, children }: Props) {
+/** En-tête bleu nuit coupé en biais : la signature du site (voir DESIGN.md). */
+export function PageHeader({ title, back, logo, action, children }: Props) {
+  // Les noms d'exercices sont longs : un cran plus petit pour rester sur 2–3 lignes.
+  const size = title.length > 18 ? 'text-title' : 'text-display'
   return (
-    <header className="-mx-4 -mt-6 mb-6 bg-brand px-4 pt-[calc(1rem+env(safe-area-inset-top))] pb-6 text-white sm:rounded-b-2xl [&_*:focus-visible]:outline-white">
-      {back &&
-        ('to' in back ? (
-          <Link to={back.to} className={backClass}>
-            <BackIcon className="size-5" /> {back.label}
-          </Link>
-        ) : (
-          <button type="button" onClick={back.onClick} className={backClass}>
-            <BackIcon className="size-5" /> {back.label}
-          </button>
-        ))}
-      <div className="flex items-end justify-between gap-4">
-        <div className="min-w-0">
-          {eyebrow && (
-            <p className="text-sm font-semibold text-white/85">{eyebrow}</p>
+    <header className="-mx-4 -mt-6 mb-8 bg-night px-4 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-14 text-white cut-bottom [&_*:focus-visible]:outline-white">
+      {(back ?? logo ?? action) && (
+        <div className="flex min-h-11 items-center justify-between gap-4">
+          {back &&
+            ('to' in back ? (
+              <Link to={back.to} className={backClass}>
+                <BackIcon className="size-5" /> {back.label}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={back.onClick}
+                className={backClass}
+              >
+                <BackIcon className="size-5" /> {back.label}
+              </button>
+            ))}
+          {logo && (
+            <span className="display text-lead text-white italic">Barre</span>
           )}
-          <h1 className="text-3xl leading-tight font-extrabold">{title}</h1>
+          {action}
         </div>
-        {action}
-      </div>
+      )}
+      <h1 className={`mt-4 max-w-[14ch] display ${size}`}>{title}</h1>
       {children}
     </header>
   )

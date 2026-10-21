@@ -1,14 +1,15 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { PageHeader } from '../../components/PageHeader'
-import { PlusIcon } from '../../components/icons'
+import { Score } from '../../components/Score'
 import { EmptyState, SkeletonList } from '../../components/states'
 import {
+  buttonDanger,
   buttonPrimary,
   buttonSecondary,
-  buttonDanger,
-  buttonSmall,
+  linkAction,
+  linkDanger,
 } from '../../components/ui'
 import { db } from '../../db/db'
 import {
@@ -16,6 +17,7 @@ import {
   formatLongDate,
   formatRelativeDay,
   formatSet,
+  formatShortDate,
 } from '../../lib/format'
 import {
   progressionSeries,
@@ -61,50 +63,62 @@ export function ProgressPage() {
 
   return (
     <>
-      <PageHeader
-        eyebrow="Progression"
-        title={exercise.name}
-        back={{ label: 'Mes exos', to: '/' }}
-      />
+      <PageHeader title={exercise.name} back={{ label: 'Mes exos', to: '/' }} />
+
+      {/* Asymétrique : le record prend les deux tiers, le reste s'empile à droite. */}
+      <dl className="grid grid-cols-[2fr_1fr] border-y border-rule">
+        <div className="py-4 pr-3">
+          <dt className="text-label text-steel">Record de charge</dt>
+          <dd className="mt-1">
+            {summary.maxWeight ? (
+              <Score set={summary.maxWeight.set} size="title" />
+            ) : (
+              <span className="text-steel">Pas encore</span>
+            )}
+          </dd>
+        </div>
+        <div className="divide-y divide-rule border-l border-rule">
+          <div className="py-2 pl-3">
+            <dt className="text-label text-steel">1RM est.</dt>
+            <dd className="display text-body italic">
+              {summary.best1RM ? formatKg(summary.best1RM.value) : 'Pas encore'}
+            </dd>
+          </div>
+          <div className="py-2 pl-3">
+            <dt className="text-label text-steel">Séances</dt>
+            <dd className="display text-body italic">{history.length}</dd>
+          </div>
+        </div>
+      </dl>
 
       <Link
         to={`/suivi/${exercise.id}/seance`}
-        className={`${buttonPrimary} w-full`}
+        className={`${buttonPrimary} mt-6`}
       >
-        <PlusIcon className="size-6" /> Nouvelle séance
+        Nouvelle séance
       </Link>
 
-      <dl className="mt-6 grid grid-cols-3 gap-2">
-        <Stat label="Record">
-          {summary.maxWeight ? formatSet(summary.maxWeight.set) : '—'}
-        </Stat>
-        <Stat label="1RM est.">
-          {summary.best1RM ? formatKg(summary.best1RM.value) : '—'}
-        </Stat>
-        <Stat label="Séances">{history.length}</Stat>
-      </dl>
-
-      <section className="mt-8" aria-labelledby="evolution">
-        <h2 id="evolution" className="text-xl font-bold">
+      <section className="mt-14" aria-labelledby="evolution">
+        <h2 id="evolution" className="display text-lead">
           Évolution
         </h2>
-        <div className="mt-3 rounded-xl border border-line bg-card p-4">
+        <div className="mt-4">
           {points.length > 0 ? (
             <ProgressChart points={points} />
           ) : (
-            <p className="py-8 text-center text-muted">
-              Enregistre une première séance pour voir ta courbe.
+            <p className="text-steel">
+              La courbe apparaîtra après ta première séance.
             </p>
           )}
         </div>
       </section>
 
       {sessions.length > 0 && (
-        <section className="mt-8" aria-labelledby="historique">
-          <h2 id="historique" className="text-xl font-bold">
+        <section className="mt-14" aria-labelledby="historique">
+          <h2 id="historique" className="display text-lead">
             Historique
           </h2>
-          <ol className="mt-3 space-y-3">
+          <ol className="mt-4 divide-y divide-rule border-y border-rule">
             {sessions.map((entry) => (
               <HistoryItem
                 key={entry.id}
@@ -119,17 +133,6 @@ export function ProgressPage() {
 
       <RemoveExercise exercise={exercise} sessionCount={history.length} />
     </>
-  )
-}
-
-function Stat({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="rounded-xl border border-line bg-card p-3">
-      <dt className="text-xs font-semibold text-muted">{label}</dt>
-      <dd className="mt-1 text-base leading-tight font-bold whitespace-nowrap tabular-nums">
-        {children}
-      </dd>
-    </div>
   )
 }
 
@@ -152,80 +155,94 @@ interface HistoryItemProps {
 function HistoryItem({ entry, exerciseId, summary }: HistoryItemProps) {
   const { confirming, setConfirming, confirmRef } = useConfirm()
   const day = formatLongDate(entry.date)
+  const [dayNumber, month] = formatShortDate(entry.date).split(' ')
   // summarize() renvoie les séries d'origine : l'identité suffit à retrouver la séance du record.
   const holdsMax =
     summary.maxWeight && entry.sets.includes(summary.maxWeight.set)
   const holds1RM = summary.best1RM && entry.sets.includes(summary.best1RM.set)
 
   return (
-    <li className="rounded-xl border border-line bg-card p-4">
-      <div className="flex items-baseline justify-between gap-3">
-        <h3 className="font-semibold first-letter:uppercase">
-          <time dateTime={entry.date}>{day}</time>
-        </h3>
-        <span className="shrink-0 text-sm text-muted">
-          {formatRelativeDay(entry.date)}
-        </span>
-      </div>
-      <p className="mt-1 text-lg tabular-nums">
-        {entry.sets.map(formatSet).join(' · ')}
-      </p>
-      {(holdsMax ?? holds1RM) && (
-        <p className="mt-2 flex flex-wrap gap-2 text-xs font-semibold">
-          {holdsMax && (
-            <span className="rounded-full bg-brand-soft px-2 py-0.5 text-brand ring-1 ring-brand/30">
-              Record de charge
+    <li className="grid grid-cols-[3.75rem_1fr] gap-x-3 py-4">
+      {/* Colonne de date, comme la marge d'un carnet d'entraînement. */}
+      <h3>
+        <time dateTime={entry.date} className="flex flex-col">
+          <span className="sr-only">{day}</span>
+          <span aria-hidden className="display text-title leading-none italic">
+            {dayNumber}
+          </span>
+          <span aria-hidden className="text-label text-steel">
+            {month}
+          </span>
+        </time>
+      </h3>
+      <div>
+        {/* Une série ne se coupe jamais en fin de ligne. */}
+        <p className="font-bold tabular-nums">
+          {entry.sets.map((set, i) => (
+            <span key={i}>
+              {i > 0 && ' · '}
+              <span className="whitespace-nowrap">{formatSet(set)}</span>
             </span>
+          ))}
+        </p>
+        <p className="mt-0.5 text-label text-steel">
+          {formatRelativeDay(entry.date)}
+          {holdsMax && (
+            <>
+              {' · '}
+              <span className="font-bold text-electric">Record de charge</span>
+            </>
           )}
           {holds1RM && (
-            <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-800 ring-1 ring-amber-300">
-              Meilleur 1RM
-            </span>
+            <>
+              {' · '}
+              <span className="font-bold text-night">Meilleur 1RM</span>
+            </>
           )}
         </p>
-      )}
-      {entry.note && (
-        <p className="mt-2 text-sm text-muted italic">{entry.note}</p>
-      )}
-
-      <div className="mt-3 flex flex-wrap gap-2">
-        {confirming ? (
-          <>
-            <button
-              ref={confirmRef}
-              type="button"
-              onClick={() => void db.workouts.delete(entry.id)}
-              className={buttonDanger}
-            >
-              Confirmer la suppression
-            </button>
-            <button
-              type="button"
-              onClick={() => setConfirming(false)}
-              className={buttonSmall}
-            >
-              Annuler
-            </button>
-          </>
-        ) : (
-          <>
-            <Link
-              to={`/suivi/${exerciseId}/seance/${entry.id}`}
-              aria-label={`Modifier la séance du ${day}`}
-              className={buttonSmall}
-            >
-              Modifier
-            </Link>
-            <button
-              type="button"
-              aria-label={`Supprimer la séance du ${day}`}
-              onClick={() => setConfirming(true)}
-              className={buttonSmall}
-            >
-              Supprimer
-            </button>
-          </>
+        {entry.note && (
+          <p className="mt-1 text-label text-steel italic">{entry.note}</p>
         )}
+
+        <div className="mt-1 flex flex-wrap items-center gap-x-5">
+          {confirming ? (
+            <>
+              <button
+                ref={confirmRef}
+                type="button"
+                onClick={() => void db.workouts.delete(entry.id)}
+                className={buttonDanger}
+              >
+                Confirmer la suppression
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirming(false)}
+                className={linkAction}
+              >
+                Annuler
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to={`/suivi/${exerciseId}/seance/${entry.id}`}
+                aria-label={`Modifier la séance du ${day}`}
+                className={`${linkAction} text-label`}
+              >
+                Modifier
+              </Link>
+              <button
+                type="button"
+                aria-label={`Supprimer la séance du ${day}`}
+                onClick={() => setConfirming(true)}
+                className="inline-flex min-h-11 items-center text-label text-steel underline underline-offset-4 hover:text-signal"
+              >
+                Supprimer
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </li>
   )
@@ -250,16 +267,16 @@ function RemoveExercise({
   }
 
   return (
-    <section className="mt-12 border-t border-line pt-6">
+    <section className="mt-16">
       {confirming ? (
         <div className="space-y-3">
           <p>
             Retirer {exercise.name}
             {sessionCount > 0 &&
               ` et supprimer ses ${sessionCount} séance${sessionCount > 1 ? 's' : ''}`}{' '}
-            ? Cette action est définitive.
+            ? Ce n’est pas réversible.
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-x-5">
             <button
               ref={confirmRef}
               type="button"
@@ -271,7 +288,7 @@ function RemoveExercise({
             <button
               type="button"
               onClick={() => setConfirming(false)}
-              className={buttonSmall}
+              className={linkAction}
             >
               Annuler
             </button>
@@ -281,9 +298,9 @@ function RemoveExercise({
         <button
           type="button"
           onClick={() => setConfirming(true)}
-          className={`${buttonSmall} text-muted`}
+          className={linkDanger}
         >
-          Retirer de mes exercices
+          Retirer cet exercice de ma liste
         </button>
       )}
     </section>

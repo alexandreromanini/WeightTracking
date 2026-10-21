@@ -7,7 +7,12 @@ import {
   type ReactNode,
 } from 'react'
 import { PageHeader } from '../../components/PageHeader'
-import { buttonDanger, buttonSecondary, buttonSmall } from '../../components/ui'
+import {
+  buttonDanger,
+  buttonSecondary,
+  linkAction,
+  linkDanger,
+} from '../../components/ui'
 import { db } from '../../db/db'
 import { buildDemoBackup } from '../../db/seed'
 import {
@@ -128,18 +133,16 @@ export function SettingsPage() {
   return (
     <>
       <PageHeader title="Réglages">
-        {counts && (
-          <p className="mt-1 text-white/85">Tu suis actuellement {current}.</p>
-        )}
+        {counts && <p className="mt-3">Tu suis actuellement {current}.</p>}
       </PageHeader>
 
       {message && (
         <p
           role={message.tone === 'error' ? 'alert' : 'status'}
-          className={`mt-5 rounded-xl p-3 text-sm ${
+          className={`mb-6 border-l-4 py-1 pl-3 font-bold ${
             message.tone === 'error'
-              ? 'bg-red-50 text-red-800 ring-1 ring-red-200'
-              : 'bg-green-50 text-green-800 ring-1 ring-green-200'
+              ? 'border-signal text-signal'
+              : 'border-electric text-night'
           }`}
         >
           {message.text}
@@ -150,9 +153,9 @@ export function SettingsPage() {
         <div
           role="alertdialog"
           aria-labelledby="confirm-title"
-          className="mt-5 space-y-3 rounded-xl border border-red-200 bg-card p-4"
+          className="mb-8 border-2 border-signal p-4"
         >
-          <p id="confirm-title" className="font-semibold">
+          <p id="confirm-title" className="font-bold">
             {pending.kind === 'clear'
               ? `Effacer définitivement ${current} ?`
               : `Remplacer tes données (${current}) par ${describe(
@@ -161,11 +164,11 @@ export function SettingsPage() {
                 )} ?`}
           </p>
           {hasData && (
-            <p className="text-sm text-muted">
-              Pense à exporter une sauvegarde avant, l’opération est définitive.
+            <p className="mt-1 text-label text-steel">
+              Pas de retour en arrière : exporte d’abord si tu as un doute.
             </p>
           )}
-          <div className="flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap items-center gap-x-5">
             <button
               ref={confirmRef}
               type="button"
@@ -177,7 +180,7 @@ export function SettingsPage() {
             <button
               type="button"
               onClick={() => setPending(null)}
-              className={buttonSmall}
+              className={linkAction}
             >
               Annuler
             </button>
@@ -186,23 +189,23 @@ export function SettingsPage() {
       )}
 
       <Section
-        title="Sauvegarde"
-        text="Tes données restent sur cet appareil. Exporte-les en JSON pour les conserver ou les transférer."
+        title="Tes données restent ici"
+        text="Rien ne part sur un serveur : tout vit dans ce navigateur. Exporte un fichier de temps en temps, il se réimporte en un geste, même sur un autre téléphone."
       >
         <button
           type="button"
           onClick={() => void exportData()}
           disabled={!hasData}
-          className={`${buttonSecondary} w-full disabled:opacity-50`}
+          className={`${buttonSecondary} disabled:border-rule disabled:text-steel`}
         >
           Exporter mes données
         </button>
         <button
           type="button"
           onClick={() => fileInput.current?.click()}
-          className={`${buttonSecondary} w-full`}
+          className={buttonSecondary}
         >
-          Importer une sauvegarde
+          Importer un fichier
         </button>
         <input
           ref={fileInput}
@@ -216,43 +219,40 @@ export function SettingsPage() {
       </Section>
 
       <Section
-        title="Démo"
-        text="Charge 10 semaines d’entraînement fictif sur 5 exercices pour explorer l’app."
+        title="Essayer sans rien saisir"
+        text="10 semaines fictives sur 5 mouvements de base, avec des records à battre."
       >
-        <button
-          type="button"
-          onClick={loadDemo}
-          className={`${buttonSecondary} w-full`}
-        >
+        <button type="button" onClick={loadDemo} className={buttonSecondary}>
           Charger les données de démo
         </button>
       </Section>
 
       {hasData && (
-        <Section title="Zone sensible">
+        <Section title="Repartir de zéro">
           <button
             type="button"
             onClick={() => {
               setMessage(null)
               setPending({ kind: 'clear' })
             }}
-            className={`${buttonSmall} text-muted`}
+            className={linkDanger}
           >
             Effacer toutes mes données
           </button>
         </Section>
       )}
 
-      <Section title="À propos">
-        <p className="text-sm text-muted">
-          Exercices et photos :{' '}
+      <Section title="D’où viennent les exercices">
+        <p className="max-w-md text-steel">
+          Les 870 exercices et leurs photos viennent de{' '}
           <a
             href="https://github.com/yuhonas/free-exercise-db"
-            className="font-semibold text-ink underline underline-offset-2"
+            className="font-bold text-night underline underline-offset-4"
           >
             free-exercise-db
-          </a>{' '}
-          (domaine public, Unlicense). 1RM estimé avec la formule d’Epley.
+          </a>
+          , une base libre de droits. Le 1RM est estimé avec la formule d’Epley
+          : poids × (1 + reps / 30).
         </p>
       </Section>
     </>
@@ -269,10 +269,10 @@ function Section({
   children: ReactNode
 }) {
   return (
-    <section className="mt-8 space-y-3">
-      <h2 className="text-xl font-bold">{title}</h2>
-      {text && <p className="text-sm text-muted">{text}</p>}
-      {children}
+    <section className="border-t border-rule py-8">
+      <h2 className="display text-lead">{title}</h2>
+      {text && <p className="mt-2 max-w-md text-steel">{text}</p>}
+      <div className="mt-5 flex flex-wrap items-center gap-3">{children}</div>
     </section>
   )
 }

@@ -14,20 +14,38 @@ import { formatKg, formatLongDate } from '../../lib/format'
 import type { ProgressPoint } from '../../lib/performance'
 
 // Recharts écrit les couleurs en attributs SVG : pas de var(--…) possible.
-// Paire validée (daltonisme, contraste) sur la surface card #f3f5f9.
+// Charge en trait plein électrique ; 1RM, valeur estimée, en pointillé bleu nuit
+// (voir DESIGN.md pour la justification de la paire).
 const SERIES = {
-  maxWeight: { label: 'Charge max', color: '#1f4fd1' },
-  oneRM: { label: '1RM estimé', color: '#b45309' },
+  maxWeight: { label: 'Charge max', color: '#0a3dff', dash: undefined },
+  oneRM: { label: '1RM estimé', color: '#0b1238', dash: '6 4' },
 } as const
 type SeriesKey = keyof typeof SERIES
 const SERIES_KEYS = Object.keys(SERIES) as SeriesKey[]
 
-// Mêmes valeurs que les tokens ink / muted / line / card de index.css.
+// Mêmes valeurs que les tokens night / steel / rule / white de index.css.
 const INK = {
-  text: '#14213d',
-  muted: '#5b6578',
-  line: '#e1e6ef',
-  surface: '#f3f5f9',
+  text: '#0b1238',
+  muted: '#5c627a',
+  line: '#d5d8e3',
+  surface: '#ffffff',
+}
+const FONT = "'Atkinson Hyperlegible Next', sans-serif"
+
+function Swatch({ color, dash }: { color: string; dash?: string }) {
+  return (
+    <svg aria-hidden width="20" height="4" className="shrink-0">
+      <line
+        x1="0"
+        y1="2"
+        x2="20"
+        y2="2"
+        stroke={color}
+        strokeWidth="3"
+        strokeDasharray={dash}
+      />
+    </svg>
+  )
 }
 const DAY_MS = 86_400_000
 
@@ -45,19 +63,15 @@ function ChartTooltip({ active, payload }: TooltipContentProps) {
   const point = payload[0]?.payload as ProgressPoint | undefined
   if (!active || !point) return null
   return (
-    <div className="rounded-lg border border-line bg-page px-3 py-2 text-sm shadow-lg">
-      <p className="font-semibold first-letter:uppercase">
+    <div className="border-2 border-night bg-white px-3 py-2 text-label">
+      <p className="font-bold first-letter:uppercase">
         {formatLongDate(point.date)}
       </p>
       {SERIES_KEYS.map((key) => (
-        <p key={key} className="mt-1 flex items-center gap-2 text-muted">
-          <span
-            aria-hidden
-            className="h-0.5 w-3 rounded-full"
-            style={{ background: SERIES[key].color }}
-          />
+        <p key={key} className="mt-1 flex items-center gap-2 text-steel">
+          <Swatch color={SERIES[key].color} dash={SERIES[key].dash} />
           {SERIES[key].label}
-          <span className="ml-auto pl-3 font-semibold text-ink tabular-nums">
+          <span className="ml-auto pl-3 font-bold text-night tabular-nums">
             {formatKg(point[key])}
           </span>
         </p>
@@ -76,8 +90,9 @@ const endLabel =
         y={Number(y)}
         dy={4}
         fill={INK.text}
-        fontSize={12}
-        fontWeight={600}
+        fontFamily={FONT}
+        fontSize={13}
+        fontWeight={700}
       >
         {formatKg(value)}
       </text>
@@ -105,15 +120,11 @@ export function ProgressChart({ points }: { points: ProgressPoint[] }) {
 
   return (
     <figure>
-      <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
-        <li className="mr-auto text-xs">En kg</li>
+      <ul className="flex flex-wrap items-center gap-x-5 gap-y-1 text-label text-steel">
+        <li className="mr-auto">En kg</li>
         {SERIES_KEYS.map((key) => (
           <li key={key} className="flex items-center gap-2">
-            <span
-              aria-hidden
-              className="h-0.5 w-4 rounded-full"
-              style={{ background: SERIES[key].color }}
-            />
+            <Swatch color={SERIES[key].color} dash={SERIES[key].dash} />
             {SERIES[key].label}
           </li>
         ))}
@@ -143,7 +154,7 @@ export function ProgressChart({ points }: { points: ProgressPoint[] }) {
                 (max ?? 0) + DAY_MS,
               ]}
               tickFormatter={(t: number) => shortDate.format(t)}
-              tick={{ fill: INK.muted, fontSize: 12 }}
+              tick={{ fill: INK.muted, fontSize: 12, fontFamily: FONT }}
               tickLine={false}
               axisLine={{ stroke: INK.line }}
               minTickGap={24}
@@ -151,7 +162,7 @@ export function ProgressChart({ points }: { points: ProgressPoint[] }) {
             <YAxis
               domain={[yTicks[0] ?? 0, yTicks.at(-1) ?? 0]}
               ticks={yTicks}
-              tick={{ fill: INK.muted, fontSize: 12 }}
+              tick={{ fill: INK.muted, fontSize: 12, fontFamily: FONT }}
               tickLine={false}
               axisLine={false}
               width={36}
@@ -167,13 +178,18 @@ export function ProgressChart({ points }: { points: ProgressPoint[] }) {
                 name={SERIES[key].label}
                 type="linear"
                 stroke={SERIES[key].color}
-                strokeWidth={2}
-                dot={{
-                  r: 4,
-                  fill: SERIES[key].color,
-                  stroke: INK.surface,
-                  strokeWidth: 2,
-                }}
+                strokeWidth={key === 'maxWeight' ? 3 : 2}
+                strokeDasharray={SERIES[key].dash}
+                dot={
+                  key === 'maxWeight'
+                    ? {
+                        r: 4,
+                        fill: SERIES[key].color,
+                        stroke: INK.surface,
+                        strokeWidth: 2,
+                      }
+                    : false
+                }
                 activeDot={{ r: 6, stroke: INK.surface, strokeWidth: 2 }}
                 isAnimationActive={false}
               >

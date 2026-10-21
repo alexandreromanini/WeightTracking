@@ -62,27 +62,26 @@ export function ExerciseDetailPage() {
     )
   }
 
+  const images = exercise.images.length
+    ? exercise.images.slice(0, 2)
+    : [undefined]
+
   return (
     <article>
       <PageHeader title={exercise.name} back={back} />
 
-      <div className="grid grid-cols-2 gap-3">
-        {(exercise.images.length
-          ? exercise.images.slice(0, 2)
-          : [undefined]
-        ).map((src, i) => (
-          <figure
-            key={i}
-            className={exercise.images.length < 2 ? 'col-span-2' : ''}
-          >
+      {/* Photos à fond perdu, séparées d'un filet blanc. */}
+      <div className="-mx-4 -mt-8 grid grid-cols-2 gap-px">
+        {images.map((src, i) => (
+          <figure key={i} className={images.length < 2 ? 'col-span-2' : ''}>
             <ExerciseImage
               src={src}
               name={exercise.name}
               alt={`${exercise.name}, ${POSITIONS[i] ?? ''}`}
-              className="aspect-4/3 w-full rounded-xl"
+              className="aspect-4/5 w-full"
             />
-            {exercise.images.length > 1 && (
-              <figcaption className="mt-1 text-xs text-muted">
+            {images.length > 1 && (
+              <figcaption className="px-4 pt-1 text-label text-steel">
                 {i === 0 ? 'Départ' : 'Arrivée'}
               </figcaption>
             )}
@@ -90,44 +89,39 @@ export function ExerciseDetailPage() {
         ))}
       </div>
 
-      <dl className="mt-6 space-y-4">
-        <div>
-          <dt className="text-xs font-semibold text-muted">Muscles ciblés</dt>
-          <dd className="mt-2 flex flex-wrap gap-2">
-            {exercise.primaryMuscles.map((m) => (
-              <span
-                key={m}
-                className="rounded-full bg-brand-soft px-3 py-1 text-sm font-semibold text-brand ring-1 ring-brand/30"
-              >
-                {muscleLabel(m)}
-              </span>
-            ))}
-            {exercise.secondaryMuscles.map((m) => (
-              <span
-                key={m}
-                className="rounded-full bg-line px-3 py-1 text-sm text-muted"
-              >
-                {muscleLabel(m)}
-              </span>
-            ))}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-xs font-semibold text-muted">Matériel</dt>
-          <dd className="mt-1">{equipmentLabel(exercise.equipment)}</dd>
-        </div>
+      <dl className="mt-10 grid grid-cols-[6.5rem_1fr] border-t border-rule">
+        <dt className="border-b border-rule py-3 text-label text-steel">
+          Muscles
+        </dt>
+        <dd className="border-b border-rule py-3">
+          <span className="font-bold">
+            {exercise.primaryMuscles.map(muscleLabel).join(', ')}
+          </span>
+          {exercise.secondaryMuscles.length > 0 && (
+            <span className="text-steel">
+              {', '}
+              {exercise.secondaryMuscles.map(muscleLabel).join(', ')}
+            </span>
+          )}
+        </dd>
+        <dt className="border-b border-rule py-3 text-label text-steel">
+          Matériel
+        </dt>
+        <dd className="border-b border-rule py-3">
+          {equipmentLabel(exercise.equipment)}
+        </dd>
       </dl>
 
       {exercise.instructions.length > 0 && (
-        <section className="mt-8">
-          <h2 className="text-xl font-bold">Exécution</h2>
-          <p className="mt-1 text-sm text-muted" lang="fr">
-            Instructions en anglais, issues de la base d’exercices.
+        <section className="mt-14">
+          <h2 className="display text-lead">Exécution</h2>
+          <p className="mt-1 text-label text-steel" lang="fr">
+            En anglais, telles que fournies par la base d’exercices.
           </p>
-          <ol className="mt-4 space-y-3" lang="en">
+          <ol className="mt-6 space-y-5" lang="en">
             {exercise.instructions.map((step, i) => (
-              <li key={i} className="flex gap-3">
-                <span className="text-xl font-bold text-brand tabular-nums">
+              <li key={i} className="grid grid-cols-[2.5rem_1fr]">
+                <span className="display text-title leading-none text-electric italic">
                   {i + 1}
                 </span>
                 <span className="leading-relaxed">{step}</span>
@@ -172,17 +166,17 @@ function AddBar({ exercise }: { exercise: Exercise }) {
   if (owned === undefined) return null
 
   return (
-    <div className="sticky bottom-[calc(5rem+env(safe-area-inset-bottom))] mt-8">
+    <div className="sticky bottom-[calc(4.5rem+env(safe-area-inset-bottom))] -mx-4 mt-12 bg-white px-4 py-3">
       {owned ? (
         <Link to="/" className={`${buttonSecondary} w-full`}>
-          <CheckIcon className="size-6 text-green-600" /> Dans mes exercices
+          <CheckIcon className="size-6 text-electric" /> Dans mes exercices
         </Link>
       ) : (
         <button
           type="button"
           disabled={adding}
           onClick={() => void add()}
-          className={`${buttonPrimary} w-full shadow-lg`}
+          className={`${buttonPrimary} w-full`}
         >
           Ajouter à mes exercices
         </button>

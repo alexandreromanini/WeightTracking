@@ -1,40 +1,43 @@
-# Barre — suivi de charges en musculation
+# Barre
 
-Application web mobile-first pour suivre sa progression exercice par exercice.
-À la salle, on ouvre l’app, on voit immédiatement ce qu’on a soulevé la dernière
-fois, et on enregistre sa séance en quelques pouces.
+Entre deux séries, une seule question compte : combien j’ai mis la dernière fois ?
+Barre s’ouvre sur la réponse, en très gros, pour chaque exercice. On reprend la même
+charge en un tap, ou +2,5 kg si la séance précédente est passée facilement, et
+l’app le signale le jour où le record tombe.
 
-**Démo :** [weight-tracking-tau.vercel.app](https://weight-tracking-tau.vercel.app) · données stockées uniquement dans le navigateur (aucun compte). Pour explorer sans rien saisir : bouton « Essayer avec des données de démo » sur l’accueil.
+Démo : [weight-tracking-tau.vercel.app](https://weight-tracking-tau.vercel.app).
+Aucun compte, tout reste dans le navigateur. Sur l’accueil vide, « Ou essayer avec
+10 semaines fictives » remplit l’app d’un historique de démonstration.
 
 <p align="center">
-  <img src="docs/screenshots/accueil.png" width="200" alt="Accueil : dernière performance et records de chaque exercice" />
+  <img src="docs/screenshots/accueil.png" width="200" alt="Accueil : dernière charge en très gros chiffres pour chaque exercice" />
   <img src="docs/screenshots/seance.png" width="200" alt="Saisie d’une séance pré-remplie avec des boutons ±2,5 kg" />
-  <img src="docs/screenshots/record.png" width="200" alt="Célébration d’un nouveau record" />
+  <img src="docs/screenshots/record.png" width="200" alt="Écran bleu nuit d’un nouveau record" />
 </p>
 <p align="center">
-  <img src="docs/screenshots/progression.png" width="200" alt="Graphique de progression et historique" />
+  <img src="docs/screenshots/progression.png" width="200" alt="Record, graphique de progression et historique" />
   <img src="docs/screenshots/recherche.png" width="200" alt="Recherche d’exercices en français" />
 </p>
 
-## Fonctionnalités
+## Ce que fait l’app
 
-- **Recherche d’exercices** dans une base libre de plus de 870 exercices, avec photos.
-  Recherche en français (« développé couché », « soulevé de terre », « tractions »…),
-  tolérante aux fautes de frappe, filtrable par muscle et par matériel.
-- **Mes exercices** : pour chacun, la dernière performance (« 80 kg × 8 · il y a 3 jours »),
-  le record de charge et le meilleur 1RM estimé.
-- **Saisie de séance pensée pour une main** : séries pré-remplies avec la dernière séance,
-  gros boutons ±2,5 kg / ±1 rep, virgule décimale acceptée, validation en direct.
-- **Records automatiques** : record de charge et record de 1RM estimé (formule d’Epley),
-  détectés à l’enregistrement et célébrés par une petite animation.
-- **Progression** : courbe de la charge max et du 1RM estimé sur une vraie échelle de temps,
-  historique modifiable et supprimable.
-- **Sauvegarde** : export / import JSON validé, données de démo, effacement complet.
-- **Installable et hors ligne (PWA)** : s’ajoute à l’écran d’accueil et fonctionne sans
-  réseau au fond de la salle (saisie, historique, graphiques, recherche déjà chargée).
-- **Accessibilité** : navigation clavier, focus visible, libellés explicites, annonces
-  aux lecteurs d’écran, animations désactivées si « réduire les animations » est actif,
-  palette du graphique vérifiée pour le daltonisme.
+On cherche un exercice en français (« développé couché », « rowing barre »,
+« tractions ») parmi les 876 de free-exercise-db, fautes de frappe comprises, puis on
+l’ajoute à sa liste. L’accueil affiche, pour chacun, la dernière charge, le record et
+le 1RM estimé (formule d’Epley).
+
+La saisie reprend les séries de la dernière fois. Les boutons font ±2,5 kg et ±1 rep,
+la virgule est acceptée, une valeur invalide est soulignée en rouge. À
+l’enregistrement, Barre compare avec l’historique : charge max battue, 1RM battu, ou
+les deux.
+
+L’écran Progression trace la charge max et le 1RM sur une vraie échelle de temps (deux
+semaines sans séance se voient), et chaque séance de l’historique se corrige ou se
+supprime. Les données s’exportent en JSON et se réimportent après vérification.
+
+L’app s’installe sur l’écran d’accueil et marche hors ligne, au fond de la salle sans
+réseau. Elle se navigue au clavier, annonce les records aux lecteurs d’écran et coupe
+son unique animation si le système demande moins de mouvement.
 
 ## Stack
 
@@ -98,12 +101,12 @@ automatique effacerait une séance en cours de saisie.
 
 **Poids toujours en kg.** Un futur choix kg/lbs ne sera qu’une conversion à l’affichage.
 
-**Thème « Club », en blanc et bleu.** Un bandeau bleu roi en tête de chaque écran
-(`PageHeader`), des cartes gris très clair, du texte bleu nuit et la police Manrope.
-Les couleurs portent un sens constant : bleu pour l’action et le record de charge,
-ambre pour le 1RM estimé (comme sur le graphique), rouge réservé aux erreurs et aux
-suppressions. Elles sont définies une seule fois, par rôle (`page`, `card`, `ink`,
-`muted`, `brand`…), dans `src/index.css`.
+**Une direction artistique écrite, pas implicite.** Le design « Tableau
+d’affichage » est décrit dans [`DESIGN.md`](DESIGN.md) : polices (Archivo étendu pour
+les chiffres, Atkinson Hyperlegible Next pour le texte), sept couleurs bleu et blanc,
+échelle typographique en quarte juste, interdits. Les valeurs par défaut de Tailwind
+(couleurs, tailles, rayons, ombres) sont désactivées dans `src/index.css` : une classe
+hors du système ne produit aucun style.
 
 ## Architecture
 

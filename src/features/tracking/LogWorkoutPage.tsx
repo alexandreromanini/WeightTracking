@@ -3,12 +3,13 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { PageHeader } from '../../components/PageHeader'
 import { Stepper } from '../../components/Stepper'
-import { CloseIcon, PlateIcon, PlusIcon } from '../../components/icons'
+import { Score } from '../../components/Score'
 import { EmptyState, SkeletonList } from '../../components/states'
-import { buttonPrimary, buttonSecondary } from '../../components/ui'
+import { buttonPrimary, buttonSecondary, linkAction } from '../../components/ui'
 import { db } from '../../db/db'
 import {
   formatKg,
+  formatLongDate,
   formatRelativeDay,
   formatSet,
   toISODate,
@@ -162,46 +163,87 @@ function SessionForm({ exercise, history, editing }: SessionFormProps) {
       noValidate
     >
       <PageHeader
-        eyebrow={editing ? 'Modifier la séance' : 'Séance'}
         title={exercise.name}
         back={
           editing
             ? { label: 'Progression', to: progressPath }
             : { label: 'Mes exos', to: '/' }
         }
-      />
+      >
+        {editing && (
+          <p className="mt-3">
+            Tu corriges la séance du {formatLongDate(editing.date)}.
+          </p>
+        )}
+      </PageHeader>
 
       {previous && (
-        <p className="text-sm text-muted">
-          Dernière fois, {formatRelativeDay(previous.date)} :{' '}
-          <span className="font-semibold text-ink">
+        <div>
+          <p className="text-label text-steel">
+            Dernière fois, {formatRelativeDay(previous.date)}
+          </p>
+          <p className="mt-0.5 font-bold">
             {previous.sets.map(formatSet).join(' · ')}
-          </span>
-        </p>
+          </p>
+        </div>
       )}
 
-      <label className="mt-5 flex min-h-14 items-center justify-between gap-3 rounded-xl border border-line bg-card px-4">
-        <span className="text-muted">Date</span>
+      <label className="mt-6 flex min-h-14 items-center justify-between gap-3 border-y border-rule">
+        <span className="text-steel">Date</span>
         <input
           type="date"
           value={date}
           max={today}
           required
           onChange={(e) => setDate(e.target.value)}
-          className="bg-transparent text-right font-semibold"
+          className="bg-transparent text-right font-bold"
         />
       </label>
 
-      <ol className="mt-4 space-y-3">
+      <ol className="divide-y divide-rule border-b border-rule">
         {drafts.map((draft, i) => {
           const n = i + 1
           return (
             <li
               key={draft.key}
-              className="rounded-xl border border-line bg-card p-3"
+              className="grid grid-cols-[2.25rem_1fr] gap-x-2 py-4"
             >
-              <div className="flex min-h-10 items-center justify-between">
-                <h2 className="text-lg font-bold text-muted">Série {n}</h2>
+              <span
+                aria-hidden
+                className="pt-5 display text-title leading-none text-steel italic"
+              >
+                {n}
+              </span>
+              <div>
+                <h2 className="sr-only">Série {n}</h2>
+                <div className="grid grid-cols-[3fr_2fr] gap-3">
+                  <Stepper
+                    label={`Poids, série ${n}`}
+                    unit="kg"
+                    stepText="2,5"
+                    inputMode="decimal"
+                    value={draft.weight}
+                    invalid={parseWeight(draft.weight) === null}
+                    onChange={(weight) => update(draft.key, { weight })}
+                    onStep={(dir) =>
+                      update(draft.key, {
+                        weight: stepWeight(draft.weight, dir * WEIGHT_STEP),
+                      })
+                    }
+                  />
+                  <Stepper
+                    label={`Répétitions, série ${n}`}
+                    unit="reps"
+                    stepText="1"
+                    inputMode="numeric"
+                    value={draft.reps}
+                    invalid={parseReps(draft.reps) === null}
+                    onChange={(reps) => update(draft.key, { reps })}
+                    onStep={(dir) =>
+                      update(draft.key, { reps: stepReps(draft.reps, dir) })
+                    }
+                  />
+                </div>
                 {drafts.length > 1 && (
                   <button
                     type="button"
@@ -209,39 +251,11 @@ function SessionForm({ exercise, history, editing }: SessionFormProps) {
                     onClick={() =>
                       setDrafts((ds) => ds.filter((d) => d.key !== draft.key))
                     }
-                    className="grid size-10 place-items-center rounded-full text-muted hover:text-ink active:bg-line"
+                    className="mt-1 min-h-11 text-label text-steel underline underline-offset-4 hover:text-signal"
                   >
-                    <CloseIcon className="size-5" />
+                    Retirer cette série
                   </button>
                 )}
-              </div>
-              <div className="mt-1 grid grid-cols-2 gap-3">
-                <Stepper
-                  label={`Poids, série ${n}`}
-                  unit="kg"
-                  stepText="2,5"
-                  inputMode="decimal"
-                  value={draft.weight}
-                  invalid={parseWeight(draft.weight) === null}
-                  onChange={(weight) => update(draft.key, { weight })}
-                  onStep={(dir) =>
-                    update(draft.key, {
-                      weight: stepWeight(draft.weight, dir * WEIGHT_STEP),
-                    })
-                  }
-                />
-                <Stepper
-                  label={`Répétitions, série ${n}`}
-                  unit="reps"
-                  stepText="1"
-                  inputMode="numeric"
-                  value={draft.reps}
-                  invalid={parseReps(draft.reps) === null}
-                  onChange={(reps) => update(draft.key, { reps })}
-                  onStep={(dir) =>
-                    update(draft.key, { reps: stepReps(draft.reps, dir) })
-                  }
-                />
               </div>
             </li>
           )
@@ -253,42 +267,37 @@ function SessionForm({ exercise, history, editing }: SessionFormProps) {
         onClick={() =>
           setDrafts((ds) => [...ds, withKey(ds.at(-1) ?? toDraft(DEFAULT_SET))])
         }
-        className={`${buttonSecondary} mt-3 w-full`}
+        className={`${linkAction} mt-3`}
       >
-        <PlusIcon className="size-5" /> Ajouter une série
+        + Ajouter une série
       </button>
 
-      <label className="mt-5 block">
-        <span className="text-xs font-semibold text-muted">
-          Note (facultatif)
-        </span>
+      <label className="mt-10 block">
+        <span className="text-label text-steel">Note, si besoin</span>
         <textarea
           rows={2}
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Sensations, réglages machine…"
-          className="mt-1 w-full rounded-xl border border-line bg-card p-3 placeholder:text-muted/70"
+          placeholder="Réglage du siège, sensations, douleur…"
+          className="mt-1 w-full border-b-2 border-night bg-chalk p-3 placeholder:text-steel"
         />
       </label>
 
-      <div className="sticky bottom-[calc(5rem+env(safe-area-inset-bottom))] mt-6 space-y-2">
+      <div className="sticky bottom-[calc(3.5rem+env(safe-area-inset-bottom))] -mx-4 mt-8 bg-white px-4 py-3">
         {error && (
-          <p
-            role="alert"
-            className="rounded-xl bg-red-50 p-3 text-sm text-red-800 ring-1 ring-red-200"
-          >
-            L’enregistrement a échoué. Ta saisie est conservée, réessaie.
+          <p role="alert" className="mb-2 font-bold text-signal">
+            L’enregistrement a échoué. Ta saisie est toujours là, réessaie.
           </p>
         )}
         {!valid && (
-          <p className="rounded-xl bg-page/90 p-2 text-center text-sm text-muted">
-            Corrige les valeurs encadrées en rouge.
+          <p className="mb-2 text-label text-signal">
+            Une valeur soulignée en rouge est à corriger.
           </p>
         )}
         <button
           type="submit"
           disabled={!valid || saving}
-          className={`${buttonPrimary} w-full shadow-lg`}
+          className={`${buttonPrimary} w-full`}
         >
           Enregistrer
         </button>
@@ -308,29 +317,34 @@ function RecordCelebration({
   useEffect(() => headingRef.current?.focus(), [])
 
   return (
-    <section className="flex min-h-[70dvh] flex-col items-center justify-center gap-6 text-center">
-      <PlateIcon className="size-28 text-brand motion-safe:animate-plate-in" />
+    <section className="-mx-4 -mt-6 -mb-[calc(5.5rem+env(safe-area-inset-bottom))] min-h-dvh bg-night px-4 pt-[calc(2.5rem+env(safe-area-inset-top))] pb-16 text-white [&_*:focus-visible]:outline-white">
       <h1
         ref={headingRef}
         tabIndex={-1}
-        className="text-4xl font-extrabold outline-none"
+        className="display text-display outline-none"
       >
         Nouveau record !
       </h1>
-      <ul className="flex flex-col items-center gap-3">
+      <dl className="mt-12 space-y-8">
         {records.maxWeight && summary.maxWeight && (
-          <li className="rounded-full bg-brand px-5 py-2 text-xl font-bold text-white motion-safe:animate-pop motion-safe:[animation-delay:300ms]">
-            Charge max · {formatSet(summary.maxWeight.set)}
-          </li>
+          <div className="motion-safe:animate-slam">
+            <dt className="text-label">Charge max</dt>
+            <dd>
+              <Score set={summary.maxWeight.set} size="giant" />
+            </dd>
+          </div>
         )}
         {records.oneRM && summary.best1RM && (
-          <li className="rounded-full bg-amber-100 px-5 py-2 text-xl font-bold text-amber-900 motion-safe:animate-pop motion-safe:[animation-delay:500ms]">
-            1RM estimé · {formatKg(summary.best1RM.value)}
-          </li>
+          <div>
+            <dt className="text-label">1RM estimé</dt>
+            <dd className="display text-score italic">
+              {formatKg(summary.best1RM.value)}
+            </dd>
+          </div>
         )}
-      </ul>
-      <Link to="/" className={`${buttonPrimary} mt-4`}>
-        Retour à mes exercices
+      </dl>
+      <Link to="/" className={`${buttonPrimary} mt-14`}>
+        Mes exercices
       </Link>
     </section>
   )

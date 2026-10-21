@@ -15,8 +15,8 @@ const PAGE_SIZE = 30
 const byLabel = (labels: Record<string, string>) =>
   Object.entries(labels).sort(([, a], [, b]) => a.localeCompare(b, 'fr'))
 
-const selectClass =
-  'min-h-12 w-full rounded-xl border border-line bg-card px-3 text-ink'
+const fieldClass =
+  'w-full border-b-2 border-night bg-chalk text-night placeholder:text-steel'
 
 export function SearchPage() {
   const { state, retry } = useExerciseCatalog()
@@ -56,12 +56,12 @@ export function SearchPage() {
 
   return (
     <>
-      <PageHeader title="Rechercher" />
+      <PageHeader title="Chercher un exercice" />
 
-      <form role="search" onSubmit={onSubmit} className="space-y-3">
+      <form role="search" onSubmit={onSubmit}>
         <label className="relative block">
           <span className="sr-only">Nom de l’exercice</span>
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-muted" />
+          <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-6 -translate-y-1/2 text-night" />
           <input
             type="search"
             value={query}
@@ -69,16 +69,16 @@ export function SearchPage() {
             placeholder="Développé couché, squat…"
             enterKeyHint="search"
             autoComplete="off"
-            className="min-h-14 w-full rounded-xl border border-line bg-card pr-4 pl-12 text-lg text-ink placeholder:text-muted/70"
+            className={`${fieldClass} min-h-16 pr-4 pl-12 text-lead`}
           />
         </label>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="mt-5 grid grid-cols-2 gap-x-3">
           <label>
-            <span className="sr-only">Muscle</span>
+            <span className="text-label text-steel">Muscle</span>
             <select
               value={muscle}
               onChange={(e) => update('muscle', e.target.value)}
-              className={selectClass}
+              className={`${fieldClass} mt-1 min-h-12 px-2`}
             >
               <option value="">Tous les muscles</option>
               {byLabel(MUSCLE_LABELS).map(([key, label]) => (
@@ -89,11 +89,11 @@ export function SearchPage() {
             </select>
           </label>
           <label>
-            <span className="sr-only">Matériel</span>
+            <span className="text-label text-steel">Matériel</span>
             <select
               value={equipment}
               onChange={(e) => update('materiel', e.target.value)}
-              className={selectClass}
+              className={`${fieldClass} mt-1 min-h-12 px-2`}
             >
               <option value="">Tout le matériel</option>
               {byLabel(EQUIPMENT_LABELS).map(([key, label]) => (
@@ -106,7 +106,7 @@ export function SearchPage() {
         </div>
       </form>
 
-      <section aria-label="Résultats" className="mt-6">
+      <section aria-label="Résultats" className="mt-12">
         {state.status === 'loading' && (
           <SkeletonList label="Chargement du catalogue d’exercices…" />
         )}
@@ -120,17 +120,22 @@ export function SearchPage() {
               </button>
             }
           >
-            Impossible de télécharger les exercices. Vérifie ta connexion.
+            Le téléchargement des exercices a échoué. Vérifie ta connexion.
           </EmptyState>
         )}
         {state.status === 'ready' && (
           <>
-            <p aria-live="polite" className="mb-3 text-sm text-muted">
-              {results.length} exercice{results.length > 1 ? 's' : ''}
+            <p aria-live="polite" className="mb-2 flex items-baseline gap-2">
+              <span className="display text-title italic">
+                {results.length}
+              </span>
+              <span className="text-steel">
+                exercice{results.length > 1 ? 's' : ''}
+              </span>
             </p>
             {results.length === 0 ? (
-              <EmptyState title="Aucun résultat">
-                Essaie un autre terme, en français ou en anglais, ou retire un
+              <EmptyState title="Rien sous ce nom.">
+                Essaie le terme anglais (« bench », « row ») ou retire un
                 filtre.
               </EmptyState>
             ) : (
@@ -150,7 +155,7 @@ function ResultList({ results }: { results: Exercise[] }) {
   const [limit, setLimit] = useState(PAGE_SIZE)
   return (
     <>
-      <ul className="space-y-3">
+      <ul className="divide-y divide-rule border-y border-rule">
         {results.slice(0, limit).map((exercise) => (
           <li key={exercise.id}>
             <ExerciseCard exercise={exercise} />
@@ -161,7 +166,7 @@ function ResultList({ results }: { results: Exercise[] }) {
         <button
           type="button"
           onClick={() => setLimit((n) => n + PAGE_SIZE)}
-          className={`${buttonSecondary} mt-4 w-full`}
+          className={`${buttonSecondary} mt-6`}
         >
           Voir plus
         </button>

@@ -52,7 +52,8 @@ it('pré-remplit avec la dernière séance et célèbre un nouveau record', asyn
   expect(
     await screen.findByRole('heading', { name: 'Nouveau record !' }),
   ).toHaveFocus()
-  expect(screen.getByText('Charge max · 102,5 kg × 5')).toBeInTheDocument()
+  expect(screen.getByText('Charge max')).toBeInTheDocument()
+  expect(screen.getByText('102,5 kg × 5')).toBeInTheDocument()
   expect(screen.getByText(/1RM estimé/)).toBeInTheDocument()
   expect(await db.workouts.count()).toBe(2)
 })

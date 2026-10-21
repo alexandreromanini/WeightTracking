@@ -1,45 +1,84 @@
 @import 'tailwindcss';
 
 /*
- * Thème « Club » : blanc, bleu roi et bleu nuit, comme un club de sport.
- * Couleurs nommées par rôle ; les états (erreur, succès, 1RM) utilisent
- * les palettes Tailwind red / green / amber.
+ * Direction « Tableau d'affichage » : voir DESIGN.md (tokens, règles, interdits).
+ * Les valeurs par défaut de Tailwind (couleurs, tailles, rayons, ombres) sont
+ * désactivées : seules celles définies ici produisent du style.
  */
 @theme {
-  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --color-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --font-*: initial;
 
-  --color-page: #ffffff;
-  --color-card: #f3f5f9;
-  --color-line: #e1e6ef;
-  --color-ink: #14213d;
-  --color-muted: #5b6578;
-  --color-brand: #1f4fd1;
-  --color-brand-soft: #e8eefc;
+  --font-display: 'Archivo', 'Arial Black', ui-sans-serif, sans-serif;
+  --font-sans:
+    'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
 
-  /* Célébration des records (désactivée via motion-safe si mouvement réduit). */
-  --animate-pop: pop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  --animate-plate-in: plate-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --color-white: #ffffff;
+  --color-chalk: #f4f5f8;
+  --color-night: #0b1238;
+  --color-electric: #0a3dff;
+  --color-steel: #5c627a;
+  --color-rule: #d5d8e3;
+  --color-signal: #e0242f;
+  --color-transparent: transparent;
+  --color-current: currentColor;
 
-  @keyframes pop {
+  /* Quarte juste (×1,333) sur une base de 17 px. */
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.35;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.5;
+  --text-lead: 1.4167rem;
+  --text-lead--line-height: 1.2;
+  --text-title: 1.8889rem;
+  --text-title--line-height: 1.05;
+  --text-display: 2.5185rem;
+  --text-display--line-height: 1;
+  --text-score: 3.3577rem;
+  --text-score--line-height: 0.95;
+  --text-giant: 4.4768rem;
+  --text-giant--line-height: 0.9;
+
+  /* La seule animation : un record qui tombe. */
+  --animate-slam: slam 250ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  @keyframes slam {
     from {
       opacity: 0;
-      transform: scale(0.5);
+      transform: translateX(-1.5rem) skewX(-8deg);
     }
     to {
       opacity: 1;
-      transform: scale(1);
+      transform: none;
     }
   }
-  @keyframes plate-in {
-    from {
-      opacity: 0;
-      transform: rotate(-270deg) scale(0.4);
-    }
-    to {
-      opacity: 1;
-      transform: rotate(0) scale(1);
-    }
+}
+
+/* Archivo étendu et lourd : titres, chiffres, logo. */
+@utility display {
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* Signature : la coupe en biais (bas de l'en-tête, bord du bouton principal). */
+@utility cut-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 1.75rem), 0 100%);
+}
+@utility cut-edge {
+  clip-path: polygon(0 0, 100% 0, calc(100% - 1rem) 100%, 0 100%);
+}
+
+/* Photos en bichromie bleu nuit / blanc. */
+@utility duotone {
+  background-color: var(--color-night);
+  & img {
+    filter: grayscale(1) contrast(1.05);
+    mix-blend-mode: screen;
   }
 }
 
@@ -49,9 +88,16 @@
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-page font-sans text-ink antialiased;
+    @apply bg-white font-sans text-body text-night antialiased;
   }
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-brand;
+    @apply outline-2 outline-offset-2 outline-electric;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+    }
   }
 }

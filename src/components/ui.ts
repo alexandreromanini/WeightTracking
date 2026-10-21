@@ -1,13 +1,20 @@
-/** Classes partagées par les boutons et les liens-boutons. */
+/** Classes partagées par les boutons et les liens-boutons (voir DESIGN.md). */
+
+// Bouton principal : bleu électrique, bord droit coupé en biais (signature).
+// Le focus est dessiné à l'intérieur, sinon la coupe le masquerait.
 export const buttonPrimary =
-  'inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-brand px-6 text-lg font-bold text-white shadow-sm transition hover:brightness-110 active:scale-[.98] disabled:opacity-50'
+  'display cut-edge inline-flex min-h-14 items-center gap-3 bg-electric pr-10 pl-5 text-lead text-white focus-visible:outline-white focus-visible:-outline-offset-[6px] active:bg-night disabled:bg-steel'
 
 export const buttonSecondary =
-  'inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border border-line bg-page px-6 text-lg font-bold text-ink transition hover:border-brand hover:text-brand active:scale-[.98]'
+  'inline-flex min-h-14 items-center gap-2 border-2 border-night bg-white px-5 font-bold text-night hover:bg-chalk active:bg-rule'
 
-export const buttonSmall =
-  'inline-flex min-h-11 items-center justify-center rounded-lg border border-line bg-page px-4 text-sm font-semibold text-ink transition hover:border-brand active:bg-card'
+// Action discrète : lien souligné, pas de bouton encadré.
+export const linkAction =
+  'inline-flex min-h-11 items-center font-bold text-electric underline decoration-2 underline-offset-4 hover:text-night'
 
-/** Variante destructive de buttonSmall (suppression, effacement). */
+export const linkDanger =
+  'inline-flex min-h-11 items-center font-bold text-signal underline decoration-2 underline-offset-4'
+
+// Bouton plein destructif, pour la confirmation finale.
 export const buttonDanger =
-  'inline-flex min-h-11 items-center justify-center rounded-lg bg-red-600 px-4 text-sm font-semibold text-white transition hover:bg-red-700'
+  'inline-flex min-h-11 items-center bg-signal px-4 font-bold text-white active:bg-night'

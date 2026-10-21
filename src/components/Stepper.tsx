@@ -12,7 +12,7 @@ interface Props {
 }
 
 const stepButton =
-  'min-h-14 text-lg font-bold text-muted transition-colors active:bg-line active:text-ink'
+  'min-h-14 font-bold text-night active:bg-rule disabled:text-steel'
 
 /** Champ numérique encadré de gros boutons −/+, utilisable au pouce. */
 export function Stepper({
@@ -26,14 +26,18 @@ export function Stepper({
   onStep,
 }: Props) {
   const shownStep = stepText === '1' ? '' : stepText
+  // Les boutons du poids portent « 2,5 » : ils ont besoin de plus de place.
+  const cols = shownStep
+    ? 'grid-cols-[3rem_1fr_3rem]'
+    : 'grid-cols-[2.5rem_1fr_2.5rem]'
   return (
     <div>
-      <span aria-hidden className="text-xs font-semibold text-muted">
+      <span aria-hidden className="text-label text-steel">
         {unit}
       </span>
       <div
-        className={`mt-1 grid grid-cols-[3rem_1fr_3rem] overflow-hidden rounded-xl border bg-page ${
-          invalid ? 'border-red-600' : 'border-line'
+        className={`mt-1 grid ${cols} border-b-2 bg-chalk ${
+          invalid ? 'border-signal' : 'border-night'
         }`}
       >
         <button
@@ -52,7 +56,7 @@ export function Stepper({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onFocus={(e) => e.target.select()}
-          className="w-full min-w-0 bg-transparent text-center text-2xl font-bold tabular-nums"
+          className="w-full min-w-0 bg-transparent text-center display text-lead tabular-nums"
         />
         <button
           type="button"
