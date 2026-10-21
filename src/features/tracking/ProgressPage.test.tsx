@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router'
 import { beforeEach, expect, it } from 'vitest'
@@ -73,8 +73,11 @@ it('supprime une séance après confirmation', async () => {
   expect(confirm).toHaveFocus()
   await user.click(confirm)
 
+  // useLiveQuery re-rend après l'écriture : on attend la disparition.
+  await waitFor(() => {
+    expect(screen.queryByText('Genou OK')).not.toBeInTheDocument()
+  })
   expect(await db.workouts.count()).toBe(1)
-  expect(screen.queryByText('Genou OK')).not.toBeInTheDocument()
 })
 
 it('modifie une séance existante sans en créer une nouvelle', async () => {
