@@ -1,0 +1,55 @@
+@import 'tailwindcss';
+
+/* Direction « Disques » : les couleurs des disques olympiques servent de code. */
+@theme {
+  --font-sans: 'Barlow', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Barlow Condensed', 'Barlow', ui-sans-serif, sans-serif;
+
+  --color-ink: #0f1012;
+  --color-iron: #191b1f;
+  --color-steel: #2b2e35;
+  --color-chalk: #f2efe8;
+  --color-dust: #a8a49b;
+  --color-plate-red: #e5322d;
+  --color-plate-blue: #2f6fde;
+  --color-plate-yellow: #f2c230;
+  --color-plate-green: #2e9e5b;
+
+  /* Célébration des records (désactivée via motion-safe si mouvement réduit). */
+  --animate-pop: pop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-plate-in: plate-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes plate-in {
+    from {
+      opacity: 0;
+      transform: rotate(-270deg) scale(0.4);
+    }
+    to {
+      opacity: 1;
+      transform: rotate(0) scale(1);
+    }
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-ink font-sans text-chalk antialiased;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-plate-yellow;
+  }
+}
