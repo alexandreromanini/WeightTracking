@@ -1,13 +1,14 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
-import { BackIcon, PlusIcon } from '../../components/icons'
+import { PageHeader } from '../../components/PageHeader'
+import { PlusIcon } from '../../components/icons'
 import { EmptyState, SkeletonList } from '../../components/states'
 import {
   buttonPrimary,
   buttonSecondary,
+  buttonDanger,
   buttonSmall,
-  pageTitle,
 } from '../../components/ui'
 import { db } from '../../db/db'
 import {
@@ -60,20 +61,15 @@ export function ProgressPage() {
 
   return (
     <>
-      <Link
-        to="/"
-        className="-ml-2 inline-flex min-h-12 items-center gap-1 pr-3 font-semibold text-dust hover:text-chalk"
-      >
-        <BackIcon className="size-5" /> Mes exos
-      </Link>
-      <p className="font-display text-sm font-bold tracking-[.3em] text-plate-red uppercase">
-        Progression
-      </p>
-      <h1 className={`${pageTitle} text-3xl`}>{exercise.name}</h1>
+      <PageHeader
+        eyebrow="Progression"
+        title={exercise.name}
+        back={{ label: 'Mes exos', to: '/' }}
+      />
 
       <Link
         to={`/suivi/${exercise.id}/seance`}
-        className={`${buttonPrimary} mt-5 w-full`}
+        className={`${buttonPrimary} w-full`}
       >
         <PlusIcon className="size-6" /> Nouvelle séance
       </Link>
@@ -89,17 +85,14 @@ export function ProgressPage() {
       </dl>
 
       <section className="mt-8" aria-labelledby="evolution">
-        <h2
-          id="evolution"
-          className="font-display text-2xl font-bold uppercase"
-        >
+        <h2 id="evolution" className="text-xl font-bold">
           Évolution
         </h2>
-        <div className="mt-3 rounded-xl border border-steel bg-iron p-4">
+        <div className="mt-3 rounded-xl border border-line bg-card p-4">
           {points.length > 0 ? (
             <ProgressChart points={points} />
           ) : (
-            <p className="py-8 text-center text-dust">
+            <p className="py-8 text-center text-muted">
               Enregistre une première séance pour voir ta courbe.
             </p>
           )}
@@ -108,10 +101,7 @@ export function ProgressPage() {
 
       {sessions.length > 0 && (
         <section className="mt-8" aria-labelledby="historique">
-          <h2
-            id="historique"
-            className="font-display text-2xl font-bold uppercase"
-          >
+          <h2 id="historique" className="text-xl font-bold">
             Historique
           </h2>
           <ol className="mt-3 space-y-3">
@@ -134,11 +124,9 @@ export function ProgressPage() {
 
 function Stat({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-steel bg-iron p-3">
-      <dt className="text-xs font-semibold tracking-wide text-dust uppercase">
-        {label}
-      </dt>
-      <dd className="mt-1 font-display text-xl leading-tight font-bold tabular-nums">
+    <div className="rounded-xl border border-line bg-card p-3">
+      <dt className="text-xs font-semibold text-muted">{label}</dt>
+      <dd className="mt-1 text-base leading-tight font-bold whitespace-nowrap tabular-nums">
         {children}
       </dd>
     </div>
@@ -170,34 +158,34 @@ function HistoryItem({ entry, exerciseId, summary }: HistoryItemProps) {
   const holds1RM = summary.best1RM && entry.sets.includes(summary.best1RM.set)
 
   return (
-    <li className="rounded-xl border border-steel bg-iron p-4">
+    <li className="rounded-xl border border-line bg-card p-4">
       <div className="flex items-baseline justify-between gap-3">
         <h3 className="font-semibold first-letter:uppercase">
           <time dateTime={entry.date}>{day}</time>
         </h3>
-        <span className="shrink-0 text-sm text-dust">
+        <span className="shrink-0 text-sm text-muted">
           {formatRelativeDay(entry.date)}
         </span>
       </div>
-      <p className="mt-1 font-display text-lg tabular-nums">
+      <p className="mt-1 text-lg tabular-nums">
         {entry.sets.map(formatSet).join(' · ')}
       </p>
       {(holdsMax ?? holds1RM) && (
-        <p className="mt-2 flex flex-wrap gap-2 text-xs font-semibold tracking-wide uppercase">
+        <p className="mt-2 flex flex-wrap gap-2 text-xs font-semibold">
           {holdsMax && (
-            <span className="rounded-full bg-plate-red/15 px-2 py-0.5 ring-1 ring-plate-red/60">
+            <span className="rounded-full bg-brand-soft px-2 py-0.5 text-brand ring-1 ring-brand/30">
               Record de charge
             </span>
           )}
           {holds1RM && (
-            <span className="rounded-full bg-plate-yellow/10 px-2 py-0.5 ring-1 ring-plate-yellow/50">
+            <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-800 ring-1 ring-amber-300">
               Meilleur 1RM
             </span>
           )}
         </p>
       )}
       {entry.note && (
-        <p className="mt-2 text-sm text-dust italic">{entry.note}</p>
+        <p className="mt-2 text-sm text-muted italic">{entry.note}</p>
       )}
 
       <div className="mt-3 flex flex-wrap gap-2">
@@ -207,7 +195,7 @@ function HistoryItem({ entry, exerciseId, summary }: HistoryItemProps) {
               ref={confirmRef}
               type="button"
               onClick={() => void db.workouts.delete(entry.id)}
-              className={`${buttonSmall} border-plate-red bg-plate-red`}
+              className={buttonDanger}
             >
               Confirmer la suppression
             </button>
@@ -262,7 +250,7 @@ function RemoveExercise({
   }
 
   return (
-    <section className="mt-12 border-t border-steel pt-6">
+    <section className="mt-12 border-t border-line pt-6">
       {confirming ? (
         <div className="space-y-3">
           <p>
@@ -276,7 +264,7 @@ function RemoveExercise({
               ref={confirmRef}
               type="button"
               onClick={() => void remove()}
-              className={`${buttonSmall} border-plate-red bg-plate-red`}
+              className={buttonDanger}
             >
               Oui, retirer
             </button>
@@ -293,7 +281,7 @@ function RemoveExercise({
         <button
           type="button"
           onClick={() => setConfirming(true)}
-          className={`${buttonSmall} text-dust`}
+          className={`${buttonSmall} text-muted`}
         >
           Retirer de mes exercices
         </button>

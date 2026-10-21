@@ -1,19 +1,21 @@
 @import 'tailwindcss';
 
-/* Direction « Disques » : les couleurs des disques olympiques servent de code. */
+/*
+ * Thème « Club » : blanc, bleu roi et bleu nuit, comme un club de sport.
+ * Couleurs nommées par rôle ; les états (erreur, succès, 1RM) utilisent
+ * les palettes Tailwind red / green / amber.
+ */
 @theme {
-  --font-sans: 'Barlow', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Barlow Condensed', 'Barlow', ui-sans-serif, sans-serif;
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Manrope', ui-sans-serif, system-ui, sans-serif;
 
-  --color-ink: #0f1012;
-  --color-iron: #191b1f;
-  --color-steel: #2b2e35;
-  --color-chalk: #f2efe8;
-  --color-dust: #a8a49b;
-  --color-plate-red: #e5322d;
-  --color-plate-blue: #2f6fde;
-  --color-plate-yellow: #f2c230;
-  --color-plate-green: #2e9e5b;
+  --color-page: #ffffff;
+  --color-card: #f3f5f9;
+  --color-line: #e1e6ef;
+  --color-ink: #14213d;
+  --color-muted: #5b6578;
+  --color-brand: #1f4fd1;
+  --color-brand-soft: #e8eefc;
 
   /* Célébration des records (désactivée via motion-safe si mouvement réduit). */
   --animate-pop: pop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
@@ -43,13 +45,13 @@
 
 @layer base {
   html {
-    color-scheme: dark;
+    color-scheme: light;
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-ink font-sans text-chalk antialiased;
+    @apply bg-page font-sans text-ink antialiased;
   }
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-plate-yellow;
+    @apply outline-2 outline-offset-2 outline-brand;
   }
 }

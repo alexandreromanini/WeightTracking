@@ -1,15 +1,11 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
+import { PageHeader } from '../../components/PageHeader'
 import { Stepper } from '../../components/Stepper'
-import {
-  BackIcon,
-  CloseIcon,
-  PlateIcon,
-  PlusIcon,
-} from '../../components/icons'
+import { CloseIcon, PlateIcon, PlusIcon } from '../../components/icons'
 import { EmptyState, SkeletonList } from '../../components/states'
-import { buttonPrimary, buttonSecondary, pageTitle } from '../../components/ui'
+import { buttonPrimary, buttonSecondary } from '../../components/ui'
 import { db } from '../../db/db'
 import {
   formatKg,
@@ -165,28 +161,27 @@ function SessionForm({ exercise, history, editing }: SessionFormProps) {
       }}
       noValidate
     >
-      <Link
-        to={editing ? progressPath : '/'}
-        className="-ml-2 inline-flex min-h-12 items-center gap-1 pr-3 font-semibold text-dust hover:text-chalk"
-      >
-        <BackIcon className="size-5" /> {editing ? 'Progression' : 'Mes exos'}
-      </Link>
-      <p className="font-display text-sm font-bold tracking-[.3em] text-plate-red uppercase">
-        {editing ? 'Modifier la séance' : 'Séance'}
-      </p>
-      <h1 className={`${pageTitle} text-3xl`}>{exercise.name}</h1>
+      <PageHeader
+        eyebrow={editing ? 'Modifier la séance' : 'Séance'}
+        title={exercise.name}
+        back={
+          editing
+            ? { label: 'Progression', to: progressPath }
+            : { label: 'Mes exos', to: '/' }
+        }
+      />
 
       {previous && (
-        <p className="mt-3 text-sm text-dust">
+        <p className="text-sm text-muted">
           Dernière fois, {formatRelativeDay(previous.date)} :{' '}
-          <span className="font-semibold text-chalk">
+          <span className="font-semibold text-ink">
             {previous.sets.map(formatSet).join(' · ')}
           </span>
         </p>
       )}
 
-      <label className="mt-5 flex min-h-14 items-center justify-between gap-3 rounded-xl border border-steel bg-iron px-4">
-        <span className="text-dust">Date</span>
+      <label className="mt-5 flex min-h-14 items-center justify-between gap-3 rounded-xl border border-line bg-card px-4">
+        <span className="text-muted">Date</span>
         <input
           type="date"
           value={date}
@@ -203,12 +198,10 @@ function SessionForm({ exercise, history, editing }: SessionFormProps) {
           return (
             <li
               key={draft.key}
-              className="rounded-xl border border-steel bg-iron p-3"
+              className="rounded-xl border border-line bg-card p-3"
             >
               <div className="flex min-h-10 items-center justify-between">
-                <h2 className="font-display text-lg font-bold tracking-wide text-dust uppercase">
-                  Série {n}
-                </h2>
+                <h2 className="text-lg font-bold text-muted">Série {n}</h2>
                 {drafts.length > 1 && (
                   <button
                     type="button"
@@ -216,7 +209,7 @@ function SessionForm({ exercise, history, editing }: SessionFormProps) {
                     onClick={() =>
                       setDrafts((ds) => ds.filter((d) => d.key !== draft.key))
                     }
-                    className="grid size-10 place-items-center rounded-full text-dust hover:text-chalk active:bg-steel"
+                    className="grid size-10 place-items-center rounded-full text-muted hover:text-ink active:bg-line"
                   >
                     <CloseIcon className="size-5" />
                   </button>
@@ -266,7 +259,7 @@ function SessionForm({ exercise, history, editing }: SessionFormProps) {
       </button>
 
       <label className="mt-5 block">
-        <span className="text-xs font-semibold tracking-wide text-dust uppercase">
+        <span className="text-xs font-semibold text-muted">
           Note (facultatif)
         </span>
         <textarea
@@ -274,25 +267,28 @@ function SessionForm({ exercise, history, editing }: SessionFormProps) {
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="Sensations, réglages machine…"
-          className="mt-1 w-full rounded-xl border border-steel bg-iron p-3 placeholder:text-dust/70"
+          className="mt-1 w-full rounded-xl border border-line bg-card p-3 placeholder:text-muted/70"
         />
       </label>
 
       <div className="sticky bottom-[calc(5rem+env(safe-area-inset-bottom))] mt-6 space-y-2">
         {error && (
-          <p role="alert" className="rounded-xl bg-plate-red/15 p-3 text-sm">
+          <p
+            role="alert"
+            className="rounded-xl bg-red-50 p-3 text-sm text-red-800 ring-1 ring-red-200"
+          >
             L’enregistrement a échoué. Ta saisie est conservée, réessaie.
           </p>
         )}
         {!valid && (
-          <p className="rounded-xl bg-ink/90 p-2 text-center text-sm text-dust">
+          <p className="rounded-xl bg-page/90 p-2 text-center text-sm text-muted">
             Corrige les valeurs encadrées en rouge.
           </p>
         )}
         <button
           type="submit"
           disabled={!valid || saving}
-          className={`${buttonPrimary} w-full shadow-lg shadow-ink`}
+          className={`${buttonPrimary} w-full shadow-lg`}
         >
           Enregistrer
         </button>
@@ -313,22 +309,22 @@ function RecordCelebration({
 
   return (
     <section className="flex min-h-[70dvh] flex-col items-center justify-center gap-6 text-center">
-      <PlateIcon className="size-28 text-plate-red motion-safe:animate-plate-in" />
+      <PlateIcon className="size-28 text-brand motion-safe:animate-plate-in" />
       <h1
         ref={headingRef}
         tabIndex={-1}
-        className={`${pageTitle} text-5xl outline-none`}
+        className="text-4xl font-extrabold outline-none"
       >
         Nouveau record !
       </h1>
       <ul className="flex flex-col items-center gap-3">
         {records.maxWeight && summary.maxWeight && (
-          <li className="rounded-full bg-plate-red px-5 py-2 font-display text-2xl font-bold text-chalk uppercase motion-safe:animate-pop motion-safe:[animation-delay:300ms]">
+          <li className="rounded-full bg-brand px-5 py-2 text-xl font-bold text-white motion-safe:animate-pop motion-safe:[animation-delay:300ms]">
             Charge max · {formatSet(summary.maxWeight.set)}
           </li>
         )}
         {records.oneRM && summary.best1RM && (
-          <li className="rounded-full bg-plate-yellow px-5 py-2 font-display text-2xl font-bold text-ink uppercase motion-safe:animate-pop motion-safe:[animation-delay:500ms]">
+          <li className="rounded-full bg-amber-100 px-5 py-2 text-xl font-bold text-amber-900 motion-safe:animate-pop motion-safe:[animation-delay:500ms]">
             1RM estimé · {formatKg(summary.best1RM.value)}
           </li>
         )}

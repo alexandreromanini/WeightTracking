@@ -98,9 +98,12 @@ automatique effacerait une séance en cours de saisie.
 
 **Poids toujours en kg.** Un futur choix kg/lbs ne sera qu’une conversion à l’affichage.
 
-**Identité visuelle « Disques ».** Les couleurs des disques olympiques servent de code :
-rouge pour l’action principale et les records de charge, jaune pour le 1RM estimé, bleu
-pour la courbe de charge. Typographie Barlow Condensed pour les charges, lisible de loin.
+**Thème « Club », en blanc et bleu.** Un bandeau bleu roi en tête de chaque écran
+(`PageHeader`), des cartes gris très clair, du texte bleu nuit et la police Manrope.
+Les couleurs portent un sens constant : bleu pour l’action et le record de charge,
+ambre pour le 1RM estimé (comme sur le graphique), rouge réservé aux erreurs et aux
+suppressions. Elles sont définies une seule fois, par rôle (`page`, `card`, `ink`,
+`muted`, `brand`…), dans `src/index.css`.
 
 ## Architecture
 

@@ -1,8 +1,9 @@
 import { type SubmitEvent, useDeferredValue, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
+import { PageHeader } from '../../components/PageHeader'
 import { SearchIcon } from '../../components/icons'
 import { EmptyState, SkeletonList } from '../../components/states'
-import { buttonSecondary, pageTitle } from '../../components/ui'
+import { buttonSecondary } from '../../components/ui'
 import { useExerciseCatalog } from '../../hooks/useExerciseCatalog'
 import { EQUIPMENT_LABELS, MUSCLE_LABELS } from '../../lib/labels'
 import { createSearcher } from '../../lib/search'
@@ -15,7 +16,7 @@ const byLabel = (labels: Record<string, string>) =>
   Object.entries(labels).sort(([, a], [, b]) => a.localeCompare(b, 'fr'))
 
 const selectClass =
-  'min-h-12 w-full rounded-xl border border-steel bg-iron px-3 text-chalk'
+  'min-h-12 w-full rounded-xl border border-line bg-card px-3 text-ink'
 
 export function SearchPage() {
   const { state, retry } = useExerciseCatalog()
@@ -55,12 +56,12 @@ export function SearchPage() {
 
   return (
     <>
-      <h1 className={pageTitle}>Rechercher</h1>
+      <PageHeader title="Rechercher" />
 
-      <form role="search" onSubmit={onSubmit} className="mt-5 space-y-3">
+      <form role="search" onSubmit={onSubmit} className="space-y-3">
         <label className="relative block">
           <span className="sr-only">Nom de l’exercice</span>
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-dust" />
+          <SearchIcon className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-muted" />
           <input
             type="search"
             value={query}
@@ -68,7 +69,7 @@ export function SearchPage() {
             placeholder="Développé couché, squat…"
             enterKeyHint="search"
             autoComplete="off"
-            className="min-h-14 w-full rounded-xl border border-steel bg-iron pr-4 pl-12 text-lg text-chalk placeholder:text-dust/70"
+            className="min-h-14 w-full rounded-xl border border-line bg-card pr-4 pl-12 text-lg text-ink placeholder:text-muted/70"
           />
         </label>
         <div className="grid grid-cols-2 gap-3">
@@ -124,7 +125,7 @@ export function SearchPage() {
         )}
         {state.status === 'ready' && (
           <>
-            <p aria-live="polite" className="mb-3 text-sm text-dust">
+            <p aria-live="polite" className="mb-3 text-sm text-muted">
               {results.length} exercice{results.length > 1 ? 's' : ''}
             </p>
             {results.length === 0 ? (

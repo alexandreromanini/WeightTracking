@@ -1,10 +1,11 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
+import { PageHeader } from '../../components/PageHeader'
 import { ExerciseImage } from '../../components/ExerciseImage'
-import { BackIcon, CheckIcon } from '../../components/icons'
+import { CheckIcon } from '../../components/icons'
 import { EmptyState, SkeletonList } from '../../components/states'
-import { buttonPrimary, buttonSecondary, pageTitle } from '../../components/ui'
+import { buttonPrimary, buttonSecondary } from '../../components/ui'
 import { db } from '../../db/db'
 import { useExerciseCatalog } from '../../hooks/useExerciseCatalog'
 import { equipmentLabel, muscleLabel } from '../../lib/labels'
@@ -22,20 +23,12 @@ export function ExerciseDetailPage() {
   const goBack = () =>
     location.key === 'default' ? navigate('/recherche') : navigate(-1)
 
-  const back = (
-    <button
-      type="button"
-      onClick={() => void goBack()}
-      className="-ml-2 inline-flex min-h-12 items-center gap-1 pr-3 font-semibold text-dust hover:text-chalk"
-    >
-      <BackIcon className="size-5" /> Retour
-    </button>
-  )
+  const back = { label: 'Retour', onClick: () => void goBack() }
 
   if (state.status === 'loading') {
     return (
       <>
-        {back}
+        <PageHeader title="Exercice" back={back} />
         <SkeletonList count={3} label="Chargement de l’exercice…" />
       </>
     )
@@ -43,7 +36,7 @@ export function ExerciseDetailPage() {
   if (state.status === 'error') {
     return (
       <>
-        {back}
+        <PageHeader title="Exercice" back={back} />
         <EmptyState
           alert
           title="Catalogue indisponible"
@@ -61,7 +54,7 @@ export function ExerciseDetailPage() {
   if (!exercise) {
     return (
       <>
-        {back}
+        <PageHeader title="Exercice" back={back} />
         <EmptyState title="Exercice introuvable">
           Cet exercice n’existe pas ou plus dans le catalogue.
         </EmptyState>
@@ -71,10 +64,9 @@ export function ExerciseDetailPage() {
 
   return (
     <article>
-      {back}
-      <h1 className={`${pageTitle} mt-2`}>{exercise.name}</h1>
+      <PageHeader title={exercise.name} back={back} />
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {(exercise.images.length
           ? exercise.images.slice(0, 2)
           : [undefined]
@@ -90,7 +82,7 @@ export function ExerciseDetailPage() {
               className="aspect-4/3 w-full rounded-xl"
             />
             {exercise.images.length > 1 && (
-              <figcaption className="mt-1 text-xs tracking-wide text-dust uppercase">
+              <figcaption className="mt-1 text-xs text-muted">
                 {i === 0 ? 'Départ' : 'Arrivée'}
               </figcaption>
             )}
@@ -100,14 +92,12 @@ export function ExerciseDetailPage() {
 
       <dl className="mt-6 space-y-4">
         <div>
-          <dt className="text-xs font-semibold tracking-wide text-dust uppercase">
-            Muscles ciblés
-          </dt>
+          <dt className="text-xs font-semibold text-muted">Muscles ciblés</dt>
           <dd className="mt-2 flex flex-wrap gap-2">
             {exercise.primaryMuscles.map((m) => (
               <span
                 key={m}
-                className="rounded-full bg-plate-red/15 px-3 py-1 text-sm font-semibold ring-1 ring-plate-red/60"
+                className="rounded-full bg-brand-soft px-3 py-1 text-sm font-semibold text-brand ring-1 ring-brand/30"
               >
                 {muscleLabel(m)}
               </span>
@@ -115,7 +105,7 @@ export function ExerciseDetailPage() {
             {exercise.secondaryMuscles.map((m) => (
               <span
                 key={m}
-                className="rounded-full bg-steel px-3 py-1 text-sm text-dust"
+                className="rounded-full bg-line px-3 py-1 text-sm text-muted"
               >
                 {muscleLabel(m)}
               </span>
@@ -123,25 +113,21 @@ export function ExerciseDetailPage() {
           </dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold tracking-wide text-dust uppercase">
-            Matériel
-          </dt>
+          <dt className="text-xs font-semibold text-muted">Matériel</dt>
           <dd className="mt-1">{equipmentLabel(exercise.equipment)}</dd>
         </div>
       </dl>
 
       {exercise.instructions.length > 0 && (
         <section className="mt-8">
-          <h2 className="font-display text-2xl font-bold uppercase">
-            Exécution
-          </h2>
-          <p className="mt-1 text-sm text-dust" lang="fr">
+          <h2 className="text-xl font-bold">Exécution</h2>
+          <p className="mt-1 text-sm text-muted" lang="fr">
             Instructions en anglais, issues de la base d’exercices.
           </p>
           <ol className="mt-4 space-y-3" lang="en">
             {exercise.instructions.map((step, i) => (
               <li key={i} className="flex gap-3">
-                <span className="font-display text-xl font-bold text-plate-red tabular-nums">
+                <span className="text-xl font-bold text-brand tabular-nums">
                   {i + 1}
                 </span>
                 <span className="leading-relaxed">{step}</span>
@@ -189,14 +175,14 @@ function AddBar({ exercise }: { exercise: Exercise }) {
     <div className="sticky bottom-[calc(5rem+env(safe-area-inset-bottom))] mt-8">
       {owned ? (
         <Link to="/" className={`${buttonSecondary} w-full`}>
-          <CheckIcon className="size-6 text-plate-green" /> Dans mes exercices
+          <CheckIcon className="size-6 text-green-600" /> Dans mes exercices
         </Link>
       ) : (
         <button
           type="button"
           disabled={adding}
           onClick={() => void add()}
-          className={`${buttonPrimary} w-full shadow-lg shadow-ink`}
+          className={`${buttonPrimary} w-full shadow-lg`}
         >
           Ajouter à mes exercices
         </button>

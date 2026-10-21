@@ -21,10 +21,10 @@ export function EmptyState({
       className="flex flex-col items-center gap-3 px-6 py-16 text-center"
     >
       <PlateIcon
-        className={`size-12 ${alert ? 'text-plate-red' : 'text-steel'}`}
+        className={`size-12 ${alert ? 'text-red-600' : 'text-line'}`}
       />
-      <h2 className="font-display text-2xl font-bold uppercase">{title}</h2>
-      {children && <p className="max-w-xs text-dust">{children}</p>}
+      <h2 className="text-xl font-bold">{title}</h2>
+      {children && <p className="max-w-xs text-muted">{children}</p>}
       {action}
     </div>
   )
@@ -46,7 +46,7 @@ export function SkeletonList({
         {Array.from({ length: count }, (_, i) => (
           <li
             key={i}
-            className="h-26 rounded-xl bg-iron motion-safe:animate-pulse"
+            className="h-26 rounded-xl bg-card motion-safe:animate-pulse"
           />
         ))}
       </ul>

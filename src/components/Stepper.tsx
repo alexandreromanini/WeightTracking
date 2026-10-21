@@ -12,7 +12,7 @@ interface Props {
 }
 
 const stepButton =
-  'min-h-14 font-display text-lg font-bold text-dust transition-colors active:bg-steel active:text-chalk'
+  'min-h-14 text-lg font-bold text-muted transition-colors active:bg-line active:text-ink'
 
 /** Champ numérique encadré de gros boutons −/+, utilisable au pouce. */
 export function Stepper({
@@ -28,15 +28,12 @@ export function Stepper({
   const shownStep = stepText === '1' ? '' : stepText
   return (
     <div>
-      <span
-        aria-hidden
-        className="text-xs font-semibold tracking-wide text-dust uppercase"
-      >
+      <span aria-hidden className="text-xs font-semibold text-muted">
         {unit}
       </span>
       <div
-        className={`mt-1 grid grid-cols-[3rem_1fr_3rem] overflow-hidden rounded-xl border bg-ink ${
-          invalid ? 'border-plate-red' : 'border-steel'
+        className={`mt-1 grid grid-cols-[3rem_1fr_3rem] overflow-hidden rounded-xl border bg-page ${
+          invalid ? 'border-red-600' : 'border-line'
         }`}
       >
         <button
@@ -55,7 +52,7 @@ export function Stepper({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onFocus={(e) => e.target.select()}
-          className="w-full min-w-0 bg-transparent text-center font-display text-2xl font-bold tabular-nums"
+          className="w-full min-w-0 bg-transparent text-center text-2xl font-bold tabular-nums"
         />
         <button
           type="button"

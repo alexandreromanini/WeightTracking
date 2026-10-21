@@ -16,7 +16,7 @@ export function Layout() {
       {!online && (
         <p
           role="status"
-          className="bg-steel px-4 py-1.5 pt-[calc(0.375rem+env(safe-area-inset-top))] text-center text-xs text-chalk"
+          className="bg-line px-4 py-1.5 pt-[calc(0.375rem+env(safe-area-inset-top))] text-center text-xs text-ink"
         >
           Hors ligne · tes séances restent enregistrées sur ce téléphone
         </p>
@@ -26,7 +26,7 @@ export function Layout() {
       </main>
       <nav
         aria-label="Navigation principale"
-        className="fixed inset-x-0 bottom-0 border-t border-steel bg-ink/95 pb-[env(safe-area-inset-bottom)] backdrop-blur"
+        className="fixed inset-x-0 bottom-0 border-t border-line bg-page/95 pb-[env(safe-area-inset-bottom)] backdrop-blur"
       >
         <ul className="mx-auto flex max-w-2xl">
           {tabs.map(({ to, label, Icon }) => (
@@ -35,8 +35,8 @@ export function Layout() {
                 to={to}
                 end={to === '/'}
                 className={({ isActive }) =>
-                  `flex min-h-16 flex-col items-center justify-center gap-1 text-xs font-semibold tracking-wide uppercase ${
-                    isActive ? 'text-plate-red' : 'text-dust hover:text-chalk'
+                  `flex min-h-16 flex-col items-center justify-center gap-1 text-xs font-semibold ${
+                    isActive ? 'text-brand' : 'text-muted hover:text-ink'
                   }`
                 }
               >

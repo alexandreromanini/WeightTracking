@@ -26,7 +26,7 @@ export function ExerciseImage({ src, name, alt = '', className = '' }: Props) {
         role={alt ? 'img' : undefined}
         aria-label={alt || undefined}
         aria-hidden={alt ? undefined : true}
-        className={`grid place-items-center bg-steel font-display text-2xl font-bold text-dust ${className}`}
+        className={`grid place-items-center bg-line text-xl font-bold text-muted ${className}`}
       >
         {initials(name)}
       </div>
@@ -42,7 +42,7 @@ export function ExerciseImage({ src, name, alt = '', className = '' }: Props) {
       // peut la mettre en cache sans gonfler le quota de stockage.
       crossOrigin="anonymous"
       onError={() => setFailedSrc(src)}
-      className={`bg-chalk object-cover ${className}`}
+      className={`bg-white object-cover ${className}`}
     />
   )
 }

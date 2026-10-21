@@ -6,7 +6,8 @@ import {
   type ChangeEvent,
   type ReactNode,
 } from 'react'
-import { buttonSecondary, buttonSmall, pageTitle } from '../../components/ui'
+import { PageHeader } from '../../components/PageHeader'
+import { buttonDanger, buttonSecondary, buttonSmall } from '../../components/ui'
 import { db } from '../../db/db'
 import { buildDemoBackup } from '../../db/seed'
 import {
@@ -126,18 +127,19 @@ export function SettingsPage() {
 
   return (
     <>
-      <h1 className={pageTitle}>Réglages</h1>
-      {counts && (
-        <p className="mt-2 text-dust">Tu suis actuellement {current}.</p>
-      )}
+      <PageHeader title="Réglages">
+        {counts && (
+          <p className="mt-1 text-white/85">Tu suis actuellement {current}.</p>
+        )}
+      </PageHeader>
 
       {message && (
         <p
           role={message.tone === 'error' ? 'alert' : 'status'}
           className={`mt-5 rounded-xl p-3 text-sm ${
             message.tone === 'error'
-              ? 'bg-plate-red/15 ring-1 ring-plate-red/60'
-              : 'bg-plate-green/15 ring-1 ring-plate-green/60'
+              ? 'bg-red-50 text-red-800 ring-1 ring-red-200'
+              : 'bg-green-50 text-green-800 ring-1 ring-green-200'
           }`}
         >
           {message.text}
@@ -148,7 +150,7 @@ export function SettingsPage() {
         <div
           role="alertdialog"
           aria-labelledby="confirm-title"
-          className="mt-5 space-y-3 rounded-xl border border-plate-red/60 bg-iron p-4"
+          className="mt-5 space-y-3 rounded-xl border border-red-200 bg-card p-4"
         >
           <p id="confirm-title" className="font-semibold">
             {pending.kind === 'clear'
@@ -159,7 +161,7 @@ export function SettingsPage() {
                 )} ?`}
           </p>
           {hasData && (
-            <p className="text-sm text-dust">
+            <p className="text-sm text-muted">
               Pense à exporter une sauvegarde avant, l’opération est définitive.
             </p>
           )}
@@ -168,7 +170,7 @@ export function SettingsPage() {
               ref={confirmRef}
               type="button"
               onClick={confirm}
-              className={`${buttonSmall} border-plate-red bg-plate-red`}
+              className={buttonDanger}
             >
               Confirmer
             </button>
@@ -234,7 +236,7 @@ export function SettingsPage() {
               setMessage(null)
               setPending({ kind: 'clear' })
             }}
-            className={`${buttonSmall} text-dust`}
+            className={`${buttonSmall} text-muted`}
           >
             Effacer toutes mes données
           </button>
@@ -242,11 +244,11 @@ export function SettingsPage() {
       )}
 
       <Section title="À propos">
-        <p className="text-sm text-dust">
+        <p className="text-sm text-muted">
           Exercices et photos :{' '}
           <a
             href="https://github.com/yuhonas/free-exercise-db"
-            className="font-semibold text-chalk underline underline-offset-2"
+            className="font-semibold text-ink underline underline-offset-2"
           >
             free-exercise-db
           </a>{' '}
@@ -268,8 +270,8 @@ function Section({
 }) {
   return (
     <section className="mt-8 space-y-3">
-      <h2 className="font-display text-2xl font-bold uppercase">{title}</h2>
-      {text && <p className="text-sm text-dust">{text}</p>}
+      <h2 className="text-xl font-bold">{title}</h2>
+      {text && <p className="text-sm text-muted">{text}</p>}
       {children}
     </section>
   )
