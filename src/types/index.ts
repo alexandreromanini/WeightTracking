@@ -17,6 +17,8 @@ export interface UserExercise {
   exerciseId: string
   name: string
   image?: string
+  /** Muscle principal (clé du catalogue), pour les sections de l'accueil. */
+  muscle?: string
   addedAt: string
   notes?: string
 }

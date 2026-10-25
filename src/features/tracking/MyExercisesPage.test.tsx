@@ -1,4 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { beforeEach, expect, it } from 'vitest'
 import { db } from '../../db/db'
@@ -12,7 +13,11 @@ const daysAgo = (n: number) => {
 }
 
 beforeEach(async () => {
-  await Promise.all([db.userExercises.clear(), db.workouts.clear()])
+  await Promise.all([
+    db.userExercises.clear(),
+    db.workouts.clear(),
+    db.exercises.clear(),
+  ])
 })
 
 const renderPage = () =>
@@ -47,4 +52,47 @@ it('invite à ajouter un exercice quand la liste est vide', async () => {
   expect(
     await screen.findByRole('link', { name: 'Trouver un exercice' }),
   ).toHaveAttribute('href', '/recherche')
+})
+
+it('range les exercices par groupe musculaire et filtre d’un tap', async () => {
+  const user = userEvent.setup()
+  await db.userExercises.bulkAdd([
+    // Muscle copié à l'ajout…
+    {
+      exerciseId: 'Standing_Calf_Raises',
+      name: 'Standing Calf Raises',
+      muscle: 'calves',
+      addedAt: new Date().toISOString(),
+    },
+    // …ou retrouvé dans le catalogue en cache (exercice ajouté avant la fonctionnalité).
+    {
+      exerciseId: 'Dumbbell_Flyes',
+      name: 'Dumbbell Flyes',
+      addedAt: new Date().toISOString(),
+    },
+  ])
+  await db.exercises.put({
+    id: 'Dumbbell_Flyes',
+    name: 'Dumbbell Flyes',
+    category: 'strength',
+    equipment: 'dumbbell',
+    primaryMuscles: ['chest'],
+    secondaryMuscles: [],
+    instructions: [],
+    images: [],
+  })
+
+  renderPage()
+
+  const headings = await screen.findAllByRole('heading', { level: 2 })
+  expect(headings.map((h) => h.textContent)).toEqual(['Pecs1', 'Mollets1'])
+
+  await user.click(screen.getByRole('button', { name: /^Mollets/ }))
+  expect(screen.getByRole('button', { name: /^Mollets/ })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  )
+  const [card, ...others] = screen.getAllByRole('article')
+  expect(others).toHaveLength(0)
+  expect(card).toHaveTextContent('Standing Calf Raises')
 })

@@ -156,6 +156,7 @@ function AddBar({ exercise }: { exercise: Exercise }) {
         exerciseId: exercise.id,
         name: exercise.name,
         image: exercise.images[0],
+        muscle: exercise.primaryMuscles[0],
         addedAt: new Date().toISOString(),
       })
     } finally {

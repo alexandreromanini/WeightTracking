@@ -17,7 +17,7 @@ export function ExerciseSummaryCard({ exercise, summary, featured }: Props) {
   return (
     <article className="relative py-5 has-[.stretched:active]:bg-chalk has-[.stretched:focus-visible]:outline-2 has-[.stretched:focus-visible]:outline-electric">
       <div className="flex items-baseline justify-between gap-4">
-        <h2 className="leading-snug font-bold">
+        <h3 className="leading-snug font-bold">
           <Link
             to={`/suivi/${exercise.id}/seance`}
             aria-label={`Nouvelle séance : ${exercise.name}`}
@@ -25,7 +25,7 @@ export function ExerciseSummaryCard({ exercise, summary, featured }: Props) {
           >
             {exercise.name}
           </Link>
-        </h2>
+        </h3>
         {last && (
           <time dateTime={last.date} className="shrink-0 text-label text-steel">
             {formatRelativeDay(last.date)}

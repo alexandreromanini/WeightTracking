@@ -5,6 +5,7 @@ import type { UserExercise, WorkoutEntry } from '../types'
 
 interface DemoLift {
   exerciseId: string
+  muscle: string
   name: string
   start: number
   step: number
@@ -15,6 +16,7 @@ interface DemoLift {
 const LIFTS: DemoLift[] = [
   {
     exerciseId: 'Barbell_Bench_Press_-_Medium_Grip',
+    muscle: 'chest',
     name: 'Barbell Bench Press - Medium Grip',
     start: 70,
     step: 2.5,
@@ -23,6 +25,7 @@ const LIFTS: DemoLift[] = [
   },
   {
     exerciseId: 'Barbell_Squat',
+    muscle: 'quadriceps',
     name: 'Barbell Squat',
     start: 90,
     step: 5,
@@ -31,6 +34,7 @@ const LIFTS: DemoLift[] = [
   },
   {
     exerciseId: 'Barbell_Deadlift',
+    muscle: 'lower back',
     name: 'Barbell Deadlift',
     start: 120,
     step: 5,
@@ -39,6 +43,7 @@ const LIFTS: DemoLift[] = [
   },
   {
     exerciseId: 'Standing_Military_Press',
+    muscle: 'shoulders',
     name: 'Standing Military Press',
     start: 40,
     step: 2.5,
@@ -47,6 +52,7 @@ const LIFTS: DemoLift[] = [
   },
   {
     exerciseId: 'Bent_Over_Barbell_Row',
+    muscle: 'middle back',
     name: 'Bent Over Barbell Row',
     start: 60,
     step: 2.5,
@@ -77,6 +83,7 @@ export function buildDemoBackup(today = new Date()): Backup {
       id: userExerciseId,
       exerciseId: lift.exerciseId,
       name: lift.name,
+      muscle: lift.muscle,
       image: `${BASE_URL}/exercises/${lift.exerciseId}/0.jpg`,
       addedAt: daysBefore(today, HISTORY_DAYS + 1).toISOString(),
     })

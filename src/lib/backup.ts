@@ -58,18 +58,19 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
 function toUserExercise(v: unknown, n: number): UserExercise {
   if (!isObj(v)) fail(`Exercice n°${n} invalide.`)
-  const { id, exerciseId, name, addedAt, image, notes } = v
+  const { id, exerciseId, name, addedAt, image, muscle, notes } = v
   if (
     !isId(id) ||
     typeof exerciseId !== 'string' ||
     typeof name !== 'string' ||
     typeof addedAt !== 'string' ||
     !isOptionalString(image) ||
+    !isOptionalString(muscle) ||
     !isOptionalString(notes)
   ) {
     fail(`Exercice n°${n} invalide.`)
   }
-  return { id, exerciseId, name, addedAt, image, notes }
+  return { id, exerciseId, name, addedAt, image, muscle, notes }
 }
 
 function toSet(v: unknown, n: number): WorkoutSet {

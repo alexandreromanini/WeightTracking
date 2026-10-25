@@ -25,6 +25,8 @@ On cherche un exercice en français (« développé couché », « rowing barre 
 « tractions ») parmi les 876 de free-exercise-db, fautes de frappe comprises, puis on
 l’ajoute à sa liste. L’accueil affiche, pour chacun, la dernière charge, le record et
 le 1RM estimé (formule d’Epley).
+La liste est rangée par groupe musculaire (Pecs, Dos, Mollets…) : en séance
+jambes, un tap sur « Mollets » ne montre plus que les mollets.
 
 La saisie reprend les séries de la dernière fois. Les boutons font ±2,5 kg et ±1 rep,
 la virgule est acceptée, une valeur invalide est soulignée en rouge. À
