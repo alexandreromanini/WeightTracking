@@ -1,14 +1,9 @@
-# Barre
+# WeightTracking
 
 Grand fan de musculation depuis le lycée, j’ai toujours eu du mal à mémoriser les
 poids que j’avais soulevés rien qu’à la séance précédente. Alors pour y remédier,
 j’ai créé une web-app qui permet de suivre ma progression exercice par exercice :
 WeightTracking.
-
-Entre deux séries, une seule question compte : combien j’ai mis la dernière fois ?
-Barre s’ouvre sur la réponse, en très gros, pour chaque exercice. On reprend la même
-charge en un tap, ou +2,5 kg si la séance précédente est passée facilement, et
-l’app le signale le jour où le record tombe.
 
 Démo : [weight-tracking-tau.vercel.app](https://weight-tracking-tau.vercel.app).
 Aucun compte, tout reste dans le navigateur. Sur l’accueil vide, « Ou essayer avec
