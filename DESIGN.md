@@ -1,6 +1,6 @@
-# Barre · direction artistique « Tableau d'affichage »
+# WeightTracking · direction artistique « Tableau d'affichage »
 
-Barre se lit comme le tableau des charges d'une salle : des chiffres énormes, lisibles
+WeightTracking se lit comme le tableau des charges d'une salle : des chiffres énormes, lisibles
 de loin, sur du blanc et du bleu nuit. Le chiffre est la vedette, le reste se tait.
 
 Références : Basic-Fit (typo sportive épaisse, coupes en biais, blocs pleins),

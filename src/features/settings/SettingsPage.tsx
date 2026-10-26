@@ -86,7 +86,7 @@ export function SettingsPage() {
   const exportData = () =>
     run(async () => {
       downloadJson(
-        `barre-sauvegarde-${toISODate(new Date())}.json`,
+        `weighttracking-sauvegarde-${toISODate(new Date())}.json`,
         await exportBackup(),
       )
     }, 'Sauvegarde téléchargée.')

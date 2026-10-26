@@ -101,8 +101,8 @@ export function MyExercisesPage() {
             </div>
           }
         >
-          Ajoute un exercice : à chaque retour à la salle, Barre t’affiche ce
-          que tu as soulevé la dernière fois.
+          Ajoute un exercice : à chaque retour à la salle, WeightTracking
+          t’affiche ce que tu as soulevé la dernière fois.
         </EmptyState>
       )}
 

@@ -31,7 +31,7 @@ jambes, un tap sur « Mollets » ne montre plus que les mollets.
 
 La saisie reprend les séries de la dernière fois. Les boutons font ±2,5 kg et ±1 rep,
 la virgule est acceptée, une valeur invalide est soulignée en rouge. À
-l’enregistrement, Barre compare avec l’historique : charge max battue, 1RM battu, ou
+l’enregistrement, WeightTracking compare avec l’historique : charge max battue, 1RM battu, ou
 les deux.
 
 L’écran Progression trace la charge max et le 1RM sur une vraie échelle de temps (deux

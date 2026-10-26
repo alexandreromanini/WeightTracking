@@ -17,8 +17,8 @@ export default defineConfig({
       registerType: 'prompt',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Barre · tes charges, séance après séance',
-        short_name: 'Barre',
+        name: 'WeightTracking · tes charges, séance après séance',
+        short_name: 'WeightTracking',
         description:
           'Suivi de progression en musculation, exercice par exercice.',
         lang: 'fr',

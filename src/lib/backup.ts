@@ -2,6 +2,8 @@ import { db } from '../db/db'
 import type { UserExercise, WorkoutEntry, WorkoutSet } from '../types'
 
 /** Sauvegarde JSON : exercices suivis et séances (le catalogue se re-télécharge). */
+// L'identifiant de format reste « barre-backup » (ancien nom) : les sauvegardes
+// déjà exportées doivent continuer à s'importer.
 export interface Backup {
   format: 'barre-backup'
   version: 1
@@ -124,7 +126,7 @@ const hasDuplicates = (values: readonly unknown[]) =>
 /** Vérifie un fichier de sauvegarde ; lève une BackupError au message lisible. */
 export function parseBackup(raw: unknown): Backup {
   if (!isObj(raw) || raw.format !== 'barre-backup') {
-    fail('Ce fichier n’est pas une sauvegarde Barre.')
+    fail('Ce fichier n’est pas une sauvegarde WeightTracking.')
   }
   if (raw.version !== 1) fail('Version de sauvegarde non prise en charge.')
   if (!Array.isArray(raw.userExercises) || !Array.isArray(raw.workouts)) {

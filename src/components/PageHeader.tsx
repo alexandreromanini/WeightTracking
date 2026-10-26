@@ -40,7 +40,9 @@ export function PageHeader({ title, back, logo, action, children }: Props) {
               </button>
             ))}
           {logo && (
-            <span className="display text-lead text-white italic">Barre</span>
+            <span className="display text-lead text-white italic">
+              WeightTracking
+            </span>
           )}
           {action}
         </div>

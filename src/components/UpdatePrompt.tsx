@@ -16,7 +16,9 @@ export function UpdatePrompt() {
       className="fixed inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-30 bg-night text-white"
     >
       <div className="mx-auto flex max-w-2xl items-center gap-4 px-4 py-2 [&_*:focus-visible]:outline-white">
-        <p className="flex-1">Une nouvelle version de Barre est prête.</p>
+        <p className="flex-1">
+          Une nouvelle version de WeightTracking est prête.
+        </p>
         <button
           type="button"
           onClick={() => void updateServiceWorker(true)}
