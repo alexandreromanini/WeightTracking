@@ -10,13 +10,14 @@ Aucun compte, tout reste dans le navigateur. Sur l’accueil vide, « Ou essayer
 10 semaines fictives » remplit l’app d’un historique de démonstration.
 
 <p align="center">
-  <img src="docs/screenshots/accueil.png" width="200" alt="Accueil : dernière charge en très gros chiffres pour chaque exercice" />
+  <img src="docs/screenshots/accueil.png" width="200" alt="Accueil rangé par groupe musculaire, dernière charge en très gros chiffres" />
   <img src="docs/screenshots/seance.png" width="200" alt="Saisie d’une séance pré-remplie avec des boutons ±2,5 kg" />
   <img src="docs/screenshots/record.png" width="200" alt="Écran bleu nuit d’un nouveau record" />
 </p>
 <p align="center">
   <img src="docs/screenshots/progression.png" width="200" alt="Record, graphique de progression et historique" />
   <img src="docs/screenshots/recherche.png" width="200" alt="Recherche d’exercices en français" />
+  <img src="docs/screenshots/groupes.png" width="200" alt="Un tap sur « Dos » : seuls les exercices de dos restent affichés" />
 </p>
 
 ## Ce que fait l’app
